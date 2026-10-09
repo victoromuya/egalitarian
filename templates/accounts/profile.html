@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Profile — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:680px; padding-block:48px;">
+  <h2 style="margin-bottom:28px;">Account <strong>Profile</strong></h2>
+
+  <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow);margin-bottom:24px;">
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border);">
+      <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--blue-200),var(--blue-400));display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">👤</div>
+      <div>
+        <h3 style="margin-bottom:2px;">{{ user.get_full_name|default:user.username }}</h3>
+        <div style="font-size:.88rem;color:var(--gray-400);">Student · Member since {{ user.date_joined|date:"M Y" }}</div>
+      </div>
+    </div>
+
+    <form method="post" action="">
+      {% csrf_token %}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" name="first_name" class="form-input" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" name="last_name" class="form-input" value="{{ user.last_name }}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-input" value="{{ user.username }}" readonly style="background:var(--gray-50);">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-input" value="{{ user.email }}">
+      </div>
+      <button type="submit" class="btn btn--primary">Save Changes</button>
+    </form>
+  </div>
+
+  <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
+    <h3 style="margin-bottom:16px;">Change Password</h3>
+    <form method="post" action="">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Current Password</label>
+        <input type="password" class="form-input" placeholder="Enter current password">
+      </div>
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input type="password" class="form-input" placeholder="Enter new password">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input type="password" class="form-input" placeholder="Repeat new password">
+      </div>
+      <button type="submit" class="btn btn--outline">Update Password</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

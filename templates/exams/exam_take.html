@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}{{ exam.title }} — Egalitarian Computers{% endblock %}
+
+{% block extra_css %}
+<style>
+  body { background: var(--gray-50); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="background:var(--blue-800);color:white;padding:16px 0;">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
+    <h4 style="color:white;font-size:.95rem;">{{ exam.title }}</h4>
+    <div style="font-size:.82rem;color:var(--blue-200);">Passing score: {{ exam.passing_score }}%</div>
+  </div>
+</div>
+
+<form method="post" action="{% url 'submit_exam' course_slug %}" id="exam-form">
+{% csrf_token %}
+<div class="container exam-layout">
+
+  <!-- Questions -->
+  <div>
+    {% for question in exam.questions.all %}
+      <div class="question-block" id="q{{ question.id }}">
+        <div class="question-num">Question {{ forloop.counter }} of {{ exam.questions.count }}</div>
+        <div class="question-text">{{ question.text }}</div>
+        {% for choice in question.choices.all %}
+          <label class="choice-label">
+            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
+            {{ choice.text }}
+          </label>
+        {% endfor %}
+        <div style="margin-top:8px;">
+          <button type="button" class="flag-btn" data-q="{{ question.id }}">🚩 Flag for review</button>
+        </div>
+      </div>
+    {% endfor %}
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+      <a href="{% url 'course_detail' course_slug %}" class="btn btn--ghost">← Back to Course</a>
+      <button type="submit" class="btn btn--primary btn--lg" onclick="return confirm('Submit your exam? This action cannot be undone.')">
+        Submit Exam
+      </button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside>
+    <!-- Timer -->
+    <div class="exam-timer">
+      <div class="exam-timer__label">Time Remaining</div>
+      <div class="exam-timer__time" id="timer">{{ exam.duration_minutes }}:00</div>
+    </div>
+
+    <!-- Question navigator -->
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;">
+      <div style="font-size:.82rem;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">Question Navigator</div>
+      <div class="question-nav">
+        {% for question in exam.questions.all %}
+          <button type="button" class="q-nav-btn" onclick="document.getElementById('q{{ question.id }}').scrollIntoView({behavior:'smooth'})">
+            {{ forloop.counter }}
+          </button>
+        {% endfor %}
+      </div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px;font-size:.78rem;color:var(--gray-500);">
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:14px;height:14px;background:var(--blue-50);border:1.5px solid var(--primary);border-radius:3px;"></div> Answered</div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:14px;height:14px;background:#fef3c7;border:1.5px solid #f59e0b;border-radius:3px;"></div> Flagged</div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:14px;height:14px;background:white;border:1.5px solid var(--border);border-radius:3px;"></div> Unanswered</div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn--primary btn--full" onclick="return confirm('Submit your exam?')">
+      Submit Exam
+    </button>
+  </aside>
+
+</div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  let mins = {{ exam.duration_minutes }};
+  let secs = 0;
+  const timerEl = document.getElementById('timer');
+  const examForm = document.getElementById('exam-form');
+  const interval = setInterval(() => {
+    if (secs === 0) {
+      if (mins === 0) {
+        clearInterval(interval);
+        alert('Time is up! Your exam will be submitted.');
+        examForm.submit();
+        return;
+      }
+      mins--;
+      secs = 59;
+    } else {
+      secs--;
+    }
+    timerEl.textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+    if (mins < 5) timerEl.style.color = '#fca5a5';
+  }, 1000);
+
+  document.querySelectorAll('.flag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('flag-btn--flagged');
+      btn.textContent = btn.classList.contains('flag-btn--flagged') ? '🚩 Flagged' : '🚩 Flag for review';
+      const qId = btn.dataset.q;
+      document.querySelector(`#q${qId}`).closest('.question-block')
+        .style.borderLeft = btn.classList.contains('flag-btn--flagged') ? '3px solid #f59e0b' : '';
+    });
+  });
+</script>
+{% endblock %}

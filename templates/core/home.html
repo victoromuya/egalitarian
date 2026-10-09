@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Egalitarian Computers — Grow your skills{% endblock %}
+{% block body_class %}learning-home{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/homepage.css' %}">{% endblock %}
+{% block navbar %}
+<nav class="nav" id="main-nav" aria-label="Main navigation">
+  <div class="container nav__inner">
+    <a href="{% url 'home' %}" class="nav__logo" aria-label="Egalitarian Computers home"><img src="{% static 'images/logo.png' %}" alt="" width="40" height="40"><span class="nav__wordmark">Egalitarian<span>Computers</span></span></a>
+    <div class="nav__menu" id="navigation-menu"><ul class="nav__links"><li><a href="{% url 'course_list' %}" class="nav__link">Courses</a></li><li><a href="#software-services" class="nav__link">Our Services</a></li><li><a href="{% url 'about' %}" class="nav__link">About Us</a></li><li><a href="{% url 'contact' %}" class="nav__link">Contact</a></li></ul>
+      <div class="nav__actions">{% if user.is_authenticated %}<a href="{% url 'dashboard' %}" class="btn btn--primary btn--sm">Dashboard</a><a href="{% url 'logout' %}" class="btn btn--ghost btn--sm">Log Out</a>{% else %}<a href="{% url 'login' %}" class="btn btn--ghost btn--sm">Log In</a><a href="{% url 'register' %}" class="btn btn--primary btn--sm">Get Started</a>{% endif %}</div>
+    </div>
+    <button type="button" class="nav__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navigation-menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+{% endblock %}
+{% block content %}
+<svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2Zm0 0v16M6 7h3M6 11h3m6-4h3m-3 4h3"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 8h20m-13 4-3 3 3 3m6-6 3 3-3 3"/></symbol>
+<symbol id="i-people" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6 20v-3a6 6 0 0 1 12 0v3M4 7a3 3 0 0 0 0 6m16-6a3 3 0 0 1 0 6M2 20v-3m20 3v-3"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 17v-5m5 5V7m5 10V3"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="m7 6 2-3h6l2 3h4v15H3V6Z"/><circle cx="12" cy="13" r="4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 6h14M5 18h14"/></symbol>
+<symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="m8 12-2 10 6-3 6 3-2-10m-6-4 2 2 3-3"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m10 8 6 4-6 4Z"/></symbol>
+<symbol id="i-support" viewBox="0 0 24 24"><path d="M3 14v-3a9 9 0 0 1 18 0v3M7 12H3v7h4Zm10 0h4v7h-4ZM21 19c0 3-5 3-9 3"/></symbol>
+</defs></svg>
+<section class="career-hero" aria-labelledby="hero-title">
+  <div class="home-container">
+    <div class="career-hero-stage">
+      <div class="career-hero-copy"><span class="career-hero-eyebrow">World-class skills. Real-world possibilities.</span><h1 id="hero-title">Become<br><span class="career-hero-highlight">a professional</span> in<br>your chosen field.</h1><p>Build job-ready skills with practical technology courses.<br>Learn at your pace. Create a future you can be proud of.</p><div class="career-hero-actions"><a href="{% url 'register' %}" class="career-button">Get Started</a><a href="{% url 'course_list' %}" class="career-button career-button--outline">Explore Courses</a></div></div>
+      <div class="career-hero-art"><span class="career-backplate career-backplate--lime" aria-hidden="true"></span><span class="career-backplate career-backplate--dark" aria-hidden="true"></span><img src="{% static 'images/home/hero-learner.png' %}" alt="A smiling learner with yellow headphones using her phone" width="1145" height="1374" fetchpriority="high"></div>
+    </div>
+    <div class="career-hero-widgets">
+      <a href="{% url 'course_list' %}" class="career-widget career-widget--journey"><div><strong>Learn at your own pace</strong><div class="journey-track" aria-hidden="true"><span></span><i></i><b>&#10148;</b></div><span class="journey-caption">Learn. Practise. Build.</span></div><span class="journey-icon" aria-hidden="true"><svg><use href="#i-book"/></svg></span></a>
+      <a href="#popular-title" class="career-widget career-widget--courses"><div class="career-mini-chart" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span>Total Courses</span><strong>{{ course_count }}</strong></a>
+    </div>
+    <div class="career-learning-areas" aria-label="Explore our learning paths"><span>Find your path</span><a href="#popular-title" data-learning-filter="Data"><svg aria-hidden="true"><use href="#i-chart"/></svg>Data</a><a href="#popular-title" data-learning-filter="Web"><svg aria-hidden="true"><use href="#i-code"/></svg>Web</a><a href="#popular-title" data-learning-filter="Blockchain"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7Zm0 10v10M3 7l9 5 9-5"/></svg>Blockchain</a><a href="#popular-title" data-learning-filter="Desktop Publishing"><svg aria-hidden="true"><use href="#i-book"/></svg>Desktop Publishing</a></div>
+  </div>
+</section>
+<section class="engineering-services" id="software-services" aria-labelledby="engineering-title">
+  <div class="home-container">
+    <svg class="engineering-orbit" viewBox="0 0 1200 650" preserveAspectRatio="none" aria-hidden="true"><path d="M-80 230C70 150 272 152 241 54S40 132 202 325s522 249 1080-104"/></svg>
+    <div class="engineering-editorial">
+      <div class="engineering-intro">
+        <span class="engineering-eyebrow">Egalitarian Computers / Software Engineering</span>
+        <h2 id="engineering-title">Exceptional<br><strong>Software.</strong></h2>
+        <p>We build mobile apps, web platforms, and blockchain products that turn complex challenges into simple, useful experiences.</p>
+        <p class="engineering-intro-note">Thoughtfully designed. Carefully engineered.<br>Built around your business.</p>
+        <a href="{{ build_whatsapp_url }}" class="engineering-project-link" target="_blank" rel="noopener"><span class="engineering-arrow" aria-hidden="true">&#8599;</span><span><strong>Bring your idea to life</strong><small>Discuss your project</small></span></a>
+      </div>
+      <div class="engineering-device-stage" aria-label="Web, mobile and blockchain software products">
+        <span class="engineering-stage-eyebrow">One vision. Every platform.</span>
+        <figure class="engineering-device engineering-device--laptop"><img src="{% static 'images/home/services-laptop-cutout.png' %}" alt="Laptop displaying a custom business web application" width="1536" height="1024" loading="lazy"><figcaption><span>01</span> Web applications</figcaption></figure>
+        <figure class="engineering-device engineering-device--tablet"><img src="{% static 'images/home/services-blockchain-cutout.png' %}" alt="Tablet displaying a connected blockchain application" width="1536" height="1024" loading="lazy"><figcaption><span>02</span> Blockchain solutions</figcaption></figure>
+        <figure class="engineering-device engineering-device--phone"><img src="{% static 'images/home/services-phone-cutout.png' %}" alt="Smartphone displaying a custom mobile application" width="1024" height="1536" loading="lazy"><figcaption><span>03</span> Mobile experiences</figcaption></figure>
+      </div>
+    </div>
+    <div class="engineering-capabilities" id="engineering-capabilities" aria-label="Our software engineering services">
+      <article><span class="engineering-service-number">01</span><div><h3>Mobile App Development</h3><p>Intuitive iOS and Android apps that keep your customers connected to your business.</p></div></article>
+      <article><span class="engineering-service-number">02</span><div><h3>Web App Development</h3><p>Custom portals, dashboards, and platforms that make everyday work simpler.</p></div></article>
+      <article><span class="engineering-service-number">03</span><div><h3>Blockchain Development</h3><p>Smart contracts, decentralized applications, and seamless wallet integrations.</p></div></article>
+    </div>
+  </div>
+</section>
+<section class="home-section coaching" aria-labelledby="coaching-title"><div class="home-container split-layout"><div class="portrait-art portrait-art--coral"><img src="{% static 'images/home/coaching-instructor.png' %}" alt="A smiling instructor wearing a teal polo shirt" width="1024" height="1536" loading="lazy"><span class="floating-label"><svg><use href="#i-book"/></svg> Learn with experts</span><span class="small-float" aria-hidden="true">✦</span></div><div class="split-copy"><h2 id="coaching-title">Live Coaching<br><strong>by Skilled Advisors</strong></h2><p>Discover a better way to learn with Egalitarian Computers. Get practical guidance from experienced educators who help you turn ambition into ability.</p><p>From your first lesson to your next big project, find the support you need to move forward.</p><ul class="check-list"><li>Industry-relevant skills and hands-on projects</li><li>Course certificates for your achievements</li></ul><a href="{% url 'about' %}" class="home-button">Read More</a></div></div></section>
+<section class="home-section popular" aria-labelledby="popular-title">
+  <div class="home-container">
+    <div class="popular-heading"><div><span class="popular-eyebrow">Egalitarian Computers / Learning paths</span><h2 id="popular-title">Most Popular<br><strong>Courses</strong></h2></div><div class="popular-intro"><p>Build the skills that open your next door. Explore practical courses in data, web development, blockchain, and desktop publishing.</p><a href="{% url 'course_list' %}" class="popular-catalogue-link"><span aria-hidden="true">&#8599;</span>Explore all courses</a></div></div>
+    <div class="course-filters" role="group" aria-label="Filter courses">{% for category in course_categories %}<button type="button"{% if forloop.first %} class="is-active"{% endif %} data-course-filter="{{ category }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ category }}</button>{% endfor %}</div>
+    <div class="popular-grid">
+      {% for course in featured_courses %}
+      <article class="popular-card" data-course-category="{{ course.home_group }}"{% if not course.home_visible %} hidden{% endif %}>
+
+        <span class="course-level">{{ course.level }}</span>
+        <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
+        <p class="course-description">{{ course.description }}</p>
+        <div class="course-meta"><span>{{ course.duration }}</span><span>{{ course.syllabus_items|length }} topics</span></div>
+        <div class="course-certificate">Certificate included</div>
+        <div class="course-bottom"><div class="course-pricing"><span>Course fee</span><strong>{% if course.is_free %}Free{% else %}${{ course.price }}{% endif %}</strong></div><a href="{% url 'course_detail' course.slug %}" class="course-details-link" aria-label="View {{ course.title }}">View course</a></div>
+      </article>
+      {% empty %}<p class="home-empty">New courses are on the way. Explore our learning opportunities.</p>{% endfor %}
+    </div>
+    <p class="home-empty" id="course-filter-empty"{% if not initial_group_empty %} hidden{% endif %}>More courses in this category are coming soon. <a href="{% url 'course_list' %}">Explore the full catalogue &#8594;</a></p>
+    <div class="popular-footer"><p><strong>Your next chapter starts with a skill.</strong> Choose a course and take the first step.</p><a href="{% url 'course_list' %}">View the full catalogue <span aria-hidden="true">&#8599;</span></a></div>
+  </div>
+</section>
+<section class="home-section student-stories" aria-labelledby="stories-title"><div class="home-container"><div class="section-heading"><h2 id="stories-title">Our Students’<br><strong>Stories</strong></h2><button type="button" class="stories-toggle" aria-pressed="false" aria-controls="stories-track">Pause scrolling</button></div><div class="stories-window"><div class="stories-track" id="stories-track"><div class="stories-group"><article class="story-card"><span class="story-avatar">01</span><h3>Every journey starts somewhere</h3><span class="story-subtitle">Discover your potential</span><p>New to technology? Explore approachable courses that help you build confidence, one practical lesson at a time.</p><a href="{% url 'course_list' %}">Start learning <span>→</span></a></article><article class="story-card"><span class="story-avatar">02</span><h3>Your next chapter awaits</h3><span class="story-subtitle">Build career-ready skills</span><p>Take the next step with hands-on projects, structured learning, and certificates that celebrate your progress.</p><a href="{% url 'register' %}">Join our community <span>→</span></a></article><article class="story-card"><span class="story-avatar">03</span><h3>Inspire the next learner</h3><span class="story-subtitle">Share your experience</span><p>Studied with Egalitarian Computers? We’d love to hear how learning has helped you move forward.</p><a href="{% url 'contact' %}">Share your story <span>→</span></a></article></div></div></div></div></section>
+<section class="home-section choose" aria-labelledby="choose-title">
+  <div class="home-container choose-editorial">
+    <div class="choose-intro"><span class="choose-eyebrow">Built around your progress</span><h2 id="choose-title">Why Choose<br><strong>Us</strong></h2><p>Learning should take you somewhere. We combine practical courses, thoughtful guidance, and flexible study to help you make your next move with confidence.</p><a href="{% url 'course_list' %}" class="home-button">Find your learning path <span aria-hidden="true">&#8599;</span></a><div class="choose-note"><span aria-hidden="true">&#10003;</span> Real skills. Lasting confidence.</div></div>
+    <div class="choose-benefits">
+      <article><div class="choose-benefit-top"><span class="choose-number">01 / Expertise</span><span class="choose-benefit-icon" aria-hidden="true"><svg><use href="#i-award"/></svg></span></div><h3>Learn from experience.</h3><p>Build practical knowledge with educators who connect each lesson to real industry challenges.</p></article>
+      <article><div class="choose-benefit-top"><span class="choose-number">02 / Flexibility</span><span class="choose-benefit-icon" aria-hidden="true"><svg><use href="#i-book"/></svg></span></div><h3>Make learning fit your life.</h3><p>Follow a clear curriculum, revisit what matters, and develop your skills at a pace that works for you.</p></article>
+      <article><div class="choose-benefit-top"><span class="choose-number">03 / Support</span><span class="choose-benefit-icon" aria-hidden="true"><svg><use href="#i-support"/></svg></span></div><h3>Move forward with guidance.</h3><p>Stay motivated with educator support and a learning community that helps you keep making progress.</p></article>
+    </div>
+  </div>
+</section>
+<section class="home-section home-events" aria-labelledby="events-title">
+  <div class="events-full-width">
+    <div class="events-editorial-heading"><div><span class="events-eyebrow">Learn together. Go further.</span><h2 id="events-title">Upcoming<br><strong>Events</strong></h2></div><div class="events-heading-copy"><p>Step beyond the lesson. Join practical workshops, focused bootcamps, and conversations that connect you with new ideas and skills.</p><a href="{% url 'event_list' %}" class="events-all-link">Explore all events <span aria-hidden="true">&#8599;</span></a></div></div>
+    <div class="events-agenda">
+      {% for event in upcoming_events %}
+      <article class="agenda-event">
+        <div class="agenda-index"><span>0{{ forloop.counter }}</span><span class="agenda-type">{{ event.type }}</span></div>
+        <div class="agenda-main"><h3><a href="{% url 'event_detail' event.slug %}">{{ event.title }}</a></h3><p>{{ event.description|truncatewords:32 }}</p><div class="agenda-topics">{% for topic in event.topics_items|slice:':3' %}<span>{{ topic }}</span>{% endfor %}</div></div>
+        <div class="agenda-logistics"><div><span class="agenda-label">When</span><strong>{{ event.date }}</strong><span>{{ event.time }}</span></div><div><span class="agenda-label">Where</span><strong>{{ event.location }}</strong></div></div>
+        <div class="agenda-action"><span class="agenda-fee">{% if event.is_free %}Free admission{% else %}${{ event.price }}{% endif %}</span><a href="{% url 'event_detail' event.slug %}" aria-label="View {{ event.title }}">View event <span aria-hidden="true">&#8599;</span></a></div>
+      </article>
+      {% empty %}
+      <div class="agenda-empty"><span class="agenda-label">Your next learning experience</span><h3>Great things are in the making.</h3><p>New workshops, bootcamps, and seminars are coming soon. Explore our events page for the latest opportunities.</p><a href="{% url 'event_list' %}" class="home-button">Explore events <span aria-hidden="true">&#8599;</span></a></div>
+      {% endfor %}
+    </div>
+    <div class="events-closing"><span>New perspectives. Practical skills. Meaningful connections.</span><a href="{% url 'contact' %}">Have a question? Get in touch <span aria-hidden="true">&#8599;</span></a></div>
+  </div>
+</section>
+<section class="home-newsletter" aria-labelledby="newsletter-title"><div class="home-container"><div class="newsletter-panel"><h2 id="newsletter-title">Subscribe To Get<br><strong>Updates</strong></h2><p>Stay inspired with the latest courses, learning tips, and events.</p><form action="{% url 'newsletter_subscribe' %}" method="post" id="newsletter-form">{% csrf_token %}<label class="visually-hidden" for="newsletter-email">Your email address</label><input id="newsletter-email" type="email" name="email" placeholder="Enter your email" autocomplete="email" maxlength="254" required><button type="submit" class="home-button">Subscribe</button></form><p class="newsletter-status" id="newsletter-status" role="status" aria-live="polite"></p></div></div></section>
+{% endblock %}
+{% block footer %}<footer class="home-footer"><div class="home-container"><div class="home-footer-grid"><div class="home-footer-brand"><a href="{% url 'home' %}" class="footer-logo"><img src="{% static 'images/logo.png' %}" alt="" width="40" height="40"><strong>Egalitarian<span>Computers</span></strong></a><p>A learned society is a<br>progressive society.</p><a class="footer-contact" href="mailto:contactegalitarian@gmail.com">Let’s stay in touch ↗</a></div><div><h3>Course Categories</h3><a href="{% url 'course_list' %}?category=Programming">Programming</a><a href="{% url 'course_list' %}?category=Web+Design">Web Design</a><a href="{% url 'course_list' %}?category=Business">Business</a><a href="{% url 'course_list' %}?category=Language">Languages</a><a href="{% url 'course_list' %}?category=Photography">Photography</a></div><div><h3>Resources</h3><a href="{% url 'course_list' %}">Courses</a><a href="{% url 'event_list' %}">Workshops</a><a href="{% url 'event_list' %}">Bootcamps</a><a href="{% url 'course_list' %}">Learning resources</a></div><div><h3>Quick Links</h3><a href="{% url 'about' %}">About us</a><a href="{% url 'contact' %}">Contact</a><a href="{% url 'register' %}">Get started</a><a href="{% url 'login' %}">Student login</a></div><div><h3>More</h3><a href="{{ build_whatsapp_url }}" target="_blank" rel="noopener">Build with us</a><a href="{% url 'contact' %}">Support</a><a href="tel:+2348124411984">+234 812 441 1984</a><p>Lagos, Nigeria</p></div></div><p class="home-copyright">© {% now 'Y' %} Egalitarian Computers. All rights reserved.</p></div></footer>{% endblock %}
+{% block extra_js %}<script src="{% static 'js/homepage.js' %}" defer></script>{% endblock %}

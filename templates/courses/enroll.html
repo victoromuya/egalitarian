@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Enroll in {{ course.title }} — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:600px; padding-block:60px;">
+  <div class="breadcrumb" style="color:var(--gray-400);margin-bottom:28px;">
+    <a href="{% url 'course_list' %}" style="color:var(--gray-400);">Courses</a> <span>/</span>
+    <a href="{% url 'course_detail' course.slug %}" style="color:var(--gray-400);">{{ course.title }}</a> <span>/</span>
+    <span>Enroll</span>
+  </div>
+
+  <h2 style="margin-bottom:6px;">Confirm <strong>Enrollment</strong></h2>
+  <p style="margin-bottom:28px;">You are enrolling in:</p>
+
+  <div class="card" style="padding:24px; margin-bottom:24px;">
+    <span class="card__tag">{{ course.category }}</span>
+    <h3 style="margin:10px 0 6px;">{{ course.title }}</h3>
+    <div style="font-size:.88rem; color:var(--gray-400); margin-bottom:12px;">{{ course.level }} &bull; {{ course.duration }}</div>
+    <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">
+      {% if course.price == 0 %}Free{% else %}${{ course.price }}{% endif %}
+    </div>
+  </div>
+
+  {% if course.price > 0 %}
+    <div class="alert alert--warning">
+      <strong>Payment required:</strong> After enrolling, you'll need to pay via WhatsApp to unlock full course access and exam. Your enrollment will be marked pending until payment is confirmed by our admin.
+    </div>
+  {% else %}
+    <div class="alert alert--success">
+      <strong>Free course:</strong> You'll get immediate access upon enrollment.
+    </div>
+  {% endif %}
+
+  <form method="post" action="" style="margin-top:20px;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn--primary btn--full btn--lg">Confirm Enrollment</button>
+    <a href="{% url 'course_detail' course.slug %}" class="btn btn--ghost btn--full" style="margin-top:10px;">Cancel</a>
+  </form>
+</div>
+{% endblock %}

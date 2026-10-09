@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Courses — Egalitarian Computers{% endblock %}
+{% block nav_courses %}nav__link--active{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Courses</span></div>
+    <h1>Our Course Catalogue</h1>
+    <p>{{ courses|length }} courses across programming, web design, business, and more.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Filter -->
+    <div class="filter-bar">
+      {% for cat in categories %}
+        <a href="?category={{ cat }}" class="filter-btn {% if cat == active_category %}filter-btn--active{% endif %}">{{ cat }}</a>
+      {% endfor %}
+    </div>
+
+    <!-- Grid -->
+    {% if courses %}
+      <div class="grid-3">
+        {% for course in courses %}
+          <a href="{% url 'course_detail' course.slug %}" class="card" style="display:block;color:inherit;">
+            <div class="card__img">
+              {% if course.category == 'Programming' %}💻
+              {% elif course.category == 'Web Design' %}🎨
+              {% elif course.category == 'Business' %}🖨️
+              {% else %}📖{% endif %}
+            </div>
+            <div class="card__body">
+              <span class="card__tag">{{ course.category }}</span>
+              <h3 class="card__title">{{ course.title }}</h3>
+              <div class="card__meta">{{ course.level }} &bull; {{ course.duration }}</div>
+              <div class="card__price">${{ course.price }}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:.82rem;color:var(--gray-400);">⭐ 5.0</span>
+                <span class="btn btn--outline btn--sm" style="pointer-events:none;">View →</span>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state__icon">📭</div>
+        <h3>No courses in this category yet</h3>
+        <p>Check back soon or browse all categories.</p>
+        <a href="{% url 'course_list' %}" class="btn btn--primary" style="margin-top:16px;">View All</a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

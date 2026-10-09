@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} — Egalitarian Computers{% endblock %}
+{% block nav_events %}nav__link--active{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a> <span>/</span>
+      <a href="{% url 'event_list' %}">Events</a> <span>/</span>
+      <span>{{ event.title }}</span>
+    </div>
+    <span class="event-type-badge event-type-badge--{{ event.type|lower }}" style="margin-bottom:12px;display:inline-block;">{{ event.type }}</span>
+    <h1>{{ event.title }}</h1>
+    <div style="display:flex;gap:20px;margin-top:12px;color:var(--blue-100);font-size:.9rem;flex-wrap:wrap;">
+      <span>📅 {{ event.date }}</span>
+      <span>🕐 {{ event.time }}</span>
+      <span>📍 {{ event.location }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container detail-layout">
+
+    <!-- Main -->
+    <div>
+      <h2 style="margin-bottom:16px;">About <strong>This Event</strong></h2>
+      <p style="font-size:1rem;line-height:1.8;margin-bottom:32px;">{{ event.description }}</p>
+
+      <h2 style="margin-bottom:16px;">What Will <strong>Be Covered</strong></h2>
+      <div style="background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius);padding:24px;margin-bottom:32px;">
+        <ul class="syllabus-list">
+          {% for topic in event.topics %}
+            <li>{{ topic }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <h2 style="margin-bottom:16px;">Event <strong>Information</strong></h2>
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Date</span><strong>{{ event.date }}</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Time</span><strong>{{ event.time }}</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Location</span><strong>{{ event.location }}</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Total Capacity</span><strong>{{ event.capacity }} attendees</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px; border-bottom:none;">
+          <span style="color:var(--gray-500);">Seats Remaining</span>
+          <strong style="color:{% if event.seats_left < 10 %}#ef4444{% else %}var(--primary){% endif %};">{{ event.seats_left }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="detail-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-price {% if event.price == 0 %}sidebar-price--free{% endif %}">
+          {% if event.price == 0 %}Free{% else %}${{ event.price }}{% endif %}
+        </div>
+
+        {% if event.seats_left > 0 %}
+          <a href="{% url 'event_register' event.slug %}" class="btn btn--primary btn--full" style="margin-bottom:12px;">Register Now</a>
+        {% else %}
+          <button class="btn btn--full" style="background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;margin-bottom:12px;" disabled>Registration Closed</button>
+        {% endif %}
+
+        {% if event.price > 0 %}
+          <div class="alert alert--info" style="font-size:.82rem;margin-top:4px;">
+            Paid event. After registering, you'll be directed to WhatsApp to complete payment.
+          </div>
+        {% else %}
+          <div class="alert alert--success" style="font-size:.82rem;margin-top:4px;">
+            Free event. Registration confirms your spot immediately.
+          </div>
+        {% endif %}
+
+        <div style="margin-top:20px;">
+          <div style="font-size:.82rem; color:var(--gray-400); margin-bottom:8px;">Capacity</div>
+          <div class="seats-bar" style="height:6px;margin-bottom:6px;">
+            <div class="seats-bar__fill" style="width:{% widthratio event.seats_left event.capacity 100 %}%;"></div>
+          </div>
+          <div style="font-size:.82rem; color:var(--gray-500);">{{ event.seats_left }} of {{ event.capacity }} seats available</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+{% endblock %}

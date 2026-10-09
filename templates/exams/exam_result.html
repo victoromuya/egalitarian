@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Exam Result — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:700px; padding-block:60px;">
+
+  {% if result.passed %}
+    <div style="text-align:center; margin-bottom:40px;">
+      <div style="font-size:4rem; margin-bottom:12px;">🎉</div>
+      <h2 style="color:#16a34a; margin-bottom:8px;">Congratulations — <strong>You Passed!</strong></h2>
+      <p>You scored <strong>{{ result.score }}%</strong> (passing score: {{ result.passing_score }}%). Your certificate has been issued.</p>
+    </div>
+
+    <!-- Certificate preview -->
+    <div class="certificate">
+      <div class="certificate__header">Certificate of Completion</div>
+      <div class="certificate__seal">🏅</div>
+      <p style="margin-bottom:6px;font-size:.88rem;color:var(--gray-400);">This is to certify that</p>
+      <div class="certificate__name">{{ user.get_full_name|default:user.username }}</div>
+      <div class="certificate__body">has successfully completed the course</div>
+      <div class="certificate__course">{{ result.exam.title }}</div>
+      <div style="border-top:1px solid var(--border);margin:20px 0;"></div>
+      <div class="certificate__footer">
+        Issued by Egalitarian Computers · Tech Egalitarian (Tech E)<br>
+        Score: {{ result.score }}% · {{ result.correct }}/{{ result.total_questions }} correct
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+      {% if result.has_certificate %}
+        <a href="{% url 'certificate_download' course_slug %}" class="btn btn--primary">📄 Download Certificate PDF</a>
+      {% endif %}
+      <a href="{% url 'dashboard' %}" class="btn btn--outline">Back to Dashboard</a>
+    </div>
+
+  {% else %}
+    <div style="text-align:center; margin-bottom:40px;">
+      <div style="font-size:4rem; margin-bottom:12px;">😔</div>
+      <h2 style="color:#dc2626; margin-bottom:8px;">Not <strong>Quite There</strong></h2>
+      <p>You scored <strong>{{ result.score }}%</strong>. The passing score is {{ result.passing_score }}%. Don't worry — you can try again.</p>
+    </div>
+
+    <div class="card" style="padding:28px; margin-bottom:24px;">
+      <h3 style="margin-bottom:16px;">Your Results</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;">
+        <div>
+          <div style="font-size:2rem;font-weight:800;color:#dc2626;">{{ result.score }}%</div>
+          <div style="font-size:.82rem;color:var(--gray-400);">Your Score</div>
+        </div>
+        <div>
+          <div style="font-size:2rem;font-weight:800;color:var(--primary);">{{ result.passing_score }}%</div>
+          <div style="font-size:.82rem;color:var(--gray-400);">Passing Score</div>
+        </div>
+        <div>
+          <div style="font-size:2rem;font-weight:800;color:var(--gray-700);">{{ result.correct }}/{{ result.total_questions }}</div>
+          <div style="font-size:.82rem;color:var(--gray-400);">Correct Answers</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <a href="{% url 'exam_take' course_slug %}" class="btn btn--primary">Retake Exam</a>
+      {% if result.has_certificate %}
+        <a href="{% url 'certificate_download' course_slug %}" class="btn btn--outline">📄 Download Certificate PDF</a>
+      {% endif %}
+      <a href="{% url 'dashboard' %}" class="btn btn--outline">Dashboard</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

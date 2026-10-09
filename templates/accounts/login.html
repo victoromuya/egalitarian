@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Log In — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__logo">
+      <img src="{% static 'images/logo.png' %}" alt="Egalitarian Computers" onerror="this.style.display='none'">
+      <div style="font-weight:700; font-size:1rem; color:var(--blue-700);">Egalitarian Computers</div>
+    </div>
+
+    <h2>Welcome <strong>Back</strong></h2>
+    <p class="auth-card__sub">Log in to access your courses, exams, and certificates.</p>
+
+    <form method="post" action="">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Username or Email</label>
+        <input type="text" name="username" class="form-input" placeholder="Enter your username" required autofocus>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;justify-content:space-between;">
+          Password
+          <a href="#" style="font-weight:400; color:var(--primary); font-size:.82rem;">Forgot password?</a>
+        </label>
+        <input type="password" name="password" class="form-input" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="btn btn--primary btn--full btn--lg" style="margin-top:4px;">Log In</button>
+    </form>
+
+    <div class="auth-divider" style="margin-top:20px;">
+      Don't have an account? <a href="{% url 'register' %}">Create one free</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

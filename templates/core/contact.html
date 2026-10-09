@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Contact — Egalitarian Computers{% endblock %}
+{% block nav_contact %}nav__link--active{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Contact</span></div>
+    <h1>Get In Touch</h1>
+    <p>We'd love to hear from you. Reach out for admissions, partnerships, or general inquiries.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid-2" style="gap:60px;">
+
+      <!-- Contact Info -->
+      <div>
+        <h2 style="margin-bottom:28px;">Contact <strong>Information</strong></h2>
+
+        <div style="display:flex; flex-direction:column; gap:24px; margin-bottom:40px;">
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">📍</div>
+            <div>
+              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Physical Address</div>
+              <p style="font-size:.92rem;">No. 24, Oyekola Shopping Complex,<br>Jakande Gate, Oke-Afa Isolo,<br>Lagos, Nigeria</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">📞</div>
+            <div>
+              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Phone / WhatsApp</div>
+              <a href="tel:+2348124411984" style="color:var(--primary); font-size:.95rem;">+234 (812) 441 1984</a>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">✉️</div>
+            <div>
+              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Email</div>
+              <a href="mailto:contactegalitarian@gmail.com" style="color:var(--primary); font-size:.95rem;">contactegalitarian@gmail.com</a>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">🕐</div>
+            <div>
+              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Office Hours</div>
+              <p style="font-size:.92rem;">Monday – Friday: 8:00 AM – 6:00 PM WAT<br>Saturday: 9:00 AM – 2:00 PM WAT</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert--info">
+          <strong>Payment Enquiries:</strong> For course or event payments, please reach out via WhatsApp after enrolling. Our admin team will provide account details and confirm your payment.
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div>
+        <h2 style="margin-bottom:28px;">Send Us <strong>a Message</strong></h2>
+        <div style="background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:36px; box-shadow:var(--shadow);">
+          <form method="post" action="">
+            {% csrf_token %}
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" placeholder="+234 800 000 0000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <select class="form-input">
+                <option value="">Select a subject</option>
+                <option>Course Enquiry</option>
+                <option>Event Registration</option>
+                <option>Payment Confirmation</option>
+                <option>Technical Support</option>
+                <option>Partnership / Business</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-input" rows="5" placeholder="Tell us how we can help..." required style="resize:vertical;"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary btn--full">Send Message</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

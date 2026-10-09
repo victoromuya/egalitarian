@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}About — Egalitarian Computers{% endblock %}
+{% block nav_about %}nav__link--active{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a> <span>/</span> <span>About</span>
+    </div>
+    <h1>About Egalitarian Computers</h1>
+    <p>On a mission to make world-class tech education accessible to everyone, everywhere.</p>
+  </div>
+</section>
+
+<!-- Mission -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2" style="gap:60px; align-items:center;">
+      <div>
+        <span class="card__tag">Our Mission</span>
+        <h2 style="margin-top:12px; margin-bottom:16px;">A Learned Society <strong>Is a Progressive Society</strong></h2>
+        <p style="margin-bottom:16px; font-size:1.02rem;">Egalitarian Computers — operating its edutech platform as <strong>Tech E (Tech Egalitarian)</strong> — was founded on the belief that access to quality technology education should not be limited by geography, income, or background.</p>
+        <p style="margin-bottom:24px;">We believe every single person contributes to human advancement, and that a generation of confident, skilled problem-solvers is the foundation of a better world.</p>
+        <div style="display:flex; gap:32px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:2rem; font-weight:800; color:var(--primary);">150+</div>
+            <div style="font-size:.85rem; color:var(--gray-500);">Countries Reached</div>
+          </div>
+          <div>
+            <div style="font-size:2rem; font-weight:800; color:var(--primary);">28,000+</div>
+            <div style="font-size:.85rem; color:var(--gray-500);">Graduates</div>
+          </div>
+          <div>
+            <div style="font-size:2rem; font-weight:800; color:var(--primary);">1,200+</div>
+            <div style="font-size:.85rem; color:var(--gray-500);">Courses</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,var(--blue-50),var(--blue-100)); border-radius:var(--radius-xl); padding:48px; text-align:center;">
+        <div style="font-size:5rem; margin-bottom:20px;">🎓</div>
+        <h3 style="color:var(--blue-700); margin-bottom:10px;">Tech Egalitarian (Tech E)</h3>
+        <p style="color:var(--blue-600); font-size:.95rem;">A subsidiary of Egalitarian Computers — operating as a global online learning network serving learners in person and digitally across Africa and beyond.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Story -->
+<section class="section section--gray">
+  <div class="container" style="max-width:760px; margin-inline:auto;">
+    <div class="section__header">
+      <h2>Our <strong>Story</strong></h2>
+    </div>
+    <p style="margin-bottom:16px; font-size:1.02rem;">Egalitarian Computers was established in Lagos, Nigeria, by Michael Nnadi and Edwin Osamezu. What started as a local training centre at Oyekola Shopping Complex, Jakande Gate, Oke-Afa Isolo, has grown into a global education network reaching learners in over 150 countries.</p>
+    <p style="margin-bottom:16px;">The platform offers both in-person and online instruction — spanning foundational IT skills, full-stack web development, data science, blockchain engineering, and more. Every course is built to take a student from zero to job-ready.</p>
+    <p>As the platform grows, we remain committed to our founding principle: no one should be excluded from the benefits of technology education because of where they were born or what they can afford.</p>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section">
+  <div class="container">
+    <div class="section__header">
+      <h2>Leadership <strong>Team</strong></h2>
+      <p>Built by educators and entrepreneurs who believe in the power of learning.</p>
+    </div>
+    <div class="grid-2" style="max-width:860px; margin-inline:auto;">
+      {% for member in team %}
+        <div class="card" style="padding:32px; text-align:center;">
+          <div style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,var(--blue-100),var(--blue-300)); margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:2rem;">👤</div>
+          <h3 style="margin-bottom:4px;">{{ member.name }}</h3>
+          <div style="color:var(--primary); font-size:.88rem; font-weight:600; margin-bottom:14px;">{{ member.role }}</div>
+          <p style="font-size:.9rem;">{{ member.bio }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="section section--gray">
+  <div class="container">
+    <div class="section__header">
+      <h2>Our <strong>Core Values</strong></h2>
+    </div>
+    <div class="grid-3">
+      <div style="background:white; border:1px solid var(--border); border-radius:var(--radius); padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🤝</div>
+        <h3 style="margin-bottom:8px;">Accessibility</h3>
+        <p style="font-size:.9rem;">Education belongs to everyone. We design courses and pricing to minimize barriers to entry.</p>
+      </div>
+      <div style="background:white; border:1px solid var(--border); border-radius:var(--radius); padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🔬</div>
+        <h3 style="margin-bottom:8px;">Excellence</h3>
+        <p style="font-size:.9rem;">We hold our curriculum and instructors to the highest standards, delivering real-world skill.</p>
+      </div>
+      <div style="background:white; border:1px solid var(--border); border-radius:var(--radius); padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🌱</div>
+        <h3 style="margin-bottom:8px;">Growth Mindset</h3>
+        <p style="font-size:.9rem;">Learning is lifelong. We encourage curiosity, iteration, and continued development at every stage.</p>
+      </div>
+      <div style="background:white; border:1px solid var(--border); border-radius:var(--radius); padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🌍</div>
+        <h3 style="margin-bottom:8px;">Global Community</h3>
+        <p style="font-size:.9rem;">Our students connect across borders, building networks that last beyond graduation.</p>
+      </div>
+      <div style="background:white; border:1px solid var(--border); border-radius:var(--radius); padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">💡</div>
+        <h3 style="margin-bottom:8px;">Innovation</h3>
+        <p style="font-size:.9rem;">We stay at the cutting edge — teaching the tools and technologies that matter today and tomorrow.</p>
+      </div>
+      <div style="background:white; border:1px solid var(--border); border-radius:var(--radius); padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🎯</div>
+        <h3 style="margin-bottom:8px;">Accountability</h3>
+        <p style="font-size:.9rem;">From enrollment to certification, every step is transparent, structured, and student-first.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

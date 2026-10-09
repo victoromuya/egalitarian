@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="container dashboard-grid">
+
+  <!-- Sidebar nav -->
+  <aside class="dash-sidebar">
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--blue-100);display:flex;align-items:center;justify-content:center;font-size:1rem;">👤</div>
+      <div>
+        <div style="font-weight:600;font-size:.9rem;color:var(--gray-800);">{{ user.get_full_name|default:user.username }}</div>
+        <div style="font-size:.78rem;color:var(--gray-400);">Student</div>
+      </div>
+    </div>
+    <a href="{% url 'dashboard' %}"       class="dash-nav-link dash-nav-link--active"><span class="icon">🏠</span> Overview</a>
+    <a href="{% url 'my_courses' %}"      class="dash-nav-link"><span class="icon">📚</span> My Courses</a>
+    <a href="{% url 'notifications' %}"   class="dash-nav-link"><span class="icon">🔔</span> Notifications</a>
+    <a href="{% url 'profile' %}"         class="dash-nav-link"><span class="icon">⚙️</span> Profile</a>
+    <a href="{% url 'logout' %}"          class="dash-nav-link" style="margin-top:8px; border-top:1px solid var(--border); padding-top:16px;"><span class="icon">🚪</span> Log Out</a>
+  </aside>
+
+  <!-- Main -->
+  <div class="dash-main">
+    <div>
+      <h2 style="margin-bottom:6px;">Welcome back{% if user.first_name %}, {{ user.first_name }}{% endif %}! 👋</h2>
+      <p>Here's an overview of your learning progress.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stat-row">
+      <div class="dash-stat">
+        <div class="dash-stat__num">0</div>
+        <div class="dash-stat__label">Enrolled Courses</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat__num">0</div>
+        <div class="dash-stat__label">Exams Taken</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat__num">0</div>
+        <div class="dash-stat__label">Certificates Earned</div>
+      </div>
+    </div>
+
+    <!-- Enrollments -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3>My Enrollments</h3>
+        <a href="{% url 'course_list' %}" class="btn btn--outline btn--sm">Browse Courses</a>
+      </div>
+      {% if enrollments %}
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          {% for enrollment in enrollments %}
+            <div class="card" style="padding:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+              <div>
+                <h4 style="margin-bottom:4px;">{{ enrollment.course.title }}</h4>
+                <div style="font-size:.82rem;color:var(--gray-400);">Enrolled {{ enrollment.enrolled_at|date:"M d, Y" }}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                {% if enrollment.is_paid %}
+                  <span class="card__tag" style="background:#d1fae5;color:#065f46;">Paid ✓</span>
+                  <a href="{% url 'exam_take' enrollment.course.slug %}" class="btn btn--primary btn--sm">Take Exam</a>
+                {% else %}
+                  <span class="card__tag" style="background:#fef3c7;color:#92400e;">Payment Pending</span>
+                  <a href="#" class="btn btn--outline btn--sm">Pay via WhatsApp</a>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state" style="background:var(--gray-50);border-radius:var(--radius-lg);border:1px dashed var(--gray-200);">
+          <div class="empty-state__icon">📚</div>
+          <h3>No enrollments yet</h3>
+          <p>Browse our course catalogue and enroll in your first course today.</p>
+          <a href="{% url 'course_list' %}" class="btn btn--primary" style="margin-top:16px;">Explore Courses</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Notifications preview -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3>Recent Notifications</h3>
+        <a href="{% url 'notifications' %}" class="btn btn--ghost btn--sm">View All</a>
+      </div>
+      <div class="empty-state" style="background:var(--gray-50);border-radius:var(--radius-lg);border:1px dashed var(--gray-200);">
+        <div class="empty-state__icon">🔔</div>
+        <h3>All caught up</h3>
+        <p>New notifications will appear here when there's activity on your account.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

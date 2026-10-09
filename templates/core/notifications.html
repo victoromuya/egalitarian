@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Notifications — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:760px; padding-block:48px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+    <h2>Notifications</h2>
+    <form method="post" action="{% url 'mark_all_notifications_read' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn--ghost btn--sm">Mark all as read</button>
+    </form>
+  </div>
+
+  {% if notifications %}
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      {% for notif in notifications %}
+        <div class="card" style="padding:18px 20px; display:flex; gap:14px; align-items:flex-start; {% if not notif.is_read %}border-left:3px solid var(--primary);{% endif %}">
+          <div style="font-size:1.3rem; flex-shrink:0;">🔔</div>
+          <div style="flex:1;">
+            <div style="font-size:.92rem; color:var(--gray-800); margin-bottom:4px;">{{ notif.message }}</div>
+            <div style="font-size:.78rem; color:var(--gray-400);">{{ notif.created_at|timesince }} ago</div>
+          </div>
+          {% if not notif.is_read %}
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);margin-top:6px;flex-shrink:0;"></div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state" style="background:var(--gray-50);border-radius:var(--radius-lg);border:1px dashed var(--gray-200);margin-top:20px;">
+      <div class="empty-state__icon">🔔</div>
+      <h3>No notifications</h3>
+      <p>When something happens on your account — exam results, payment confirmations — it will appear here.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

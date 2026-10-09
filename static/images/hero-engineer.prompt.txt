@@ -1,0 +1,5 @@
+Generated with the built-in image_gen tool.
+Final asset: static/images/hero-engineer.webp
+
+Prompt:
+Create a photographic website hero portrait asset, vertical 4:5 composition. A friendly confident Black male software engineer and educator in his early 30s with short natural hair, neatly trimmed beard and round glasses, wearing a plain black crewneck t-shirt, holding a closed slim laptop at waist level. Waist-up framing, entire head visible with generous headroom, looking directly at camera, slight natural smile. Black and white photographic subject, clean flat light warm gray studio background. Premium editorial studio photography, natural realistic anatomy and skin texture, soft directional light. No text, logos, watermarks, graphic shapes or borders. This is an image asset only, not a website mockup.

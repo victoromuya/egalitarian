@@ -1,0 +1,5 @@
+Generated with the built-in image_gen tool.
+Final asset: static/images/hero-engineer-woman.webp
+
+Prompt:
+Create a photographic website hero portrait asset, vertical 4:5 composition. A friendly confident Black female software engineer in her early 30s, natural textured hair neatly styled back, wearing a plain black crewneck t-shirt, holding a closed slim laptop at waist level. Waist-up framing, entire head visible with generous headroom, looking directly at camera with a natural smile. Black and white photography, clean flat light warm gray studio background. Premium editorial studio photography, realistic anatomy and skin texture, soft directional light. No text, logos, watermarks, graphic shapes or borders. This is an image asset only, not a website mockup.

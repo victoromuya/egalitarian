@@ -1,0 +1,20 @@
+/* Shared typography, matching the software services section. */
+:root{--site-font:Inter,Arial,sans-serif}
+body,body *{font-family:var(--site-font)!important}
+h2{font-size:clamp(28px,3.2vw,44px)!important;font-weight:400!important;line-height:1.12!important;letter-spacing:-.055em!important;overflow-wrap:break-word}
+h2 strong{font-weight:700;letter-spacing:-.055em}
+.learning-home main section h2{font-size:clamp(42px,4.2vw,63px)!important;font-weight:400;line-height:1.08;letter-spacing:-.06em}
+.learning-home main section h2 strong{font-weight:700;letter-spacing:-.055em}
+.learning-home .section-heading{align-items:center;flex-wrap:wrap}
+.learning-home .impact-heading{align-items:center}
+.learning-home .newsletter-panel h2{max-width:800px;margin-inline:auto}
+@media(min-width:1700px){.learning-home main section h2{font-size:73px!important}}
+@media(max-width:1050px){.learning-home main section h2{font-size:45px!important}}
+@media(max-width:760px){.learning-home main section h2{font-size:clamp(36px,8.5vw,54px)!important}.learning-home .section-heading{gap:20px}.learning-home .impact-heading h2{font-size:36px!important}}
+@media(max-width:380px){.learning-home main section h2{font-size:36px!important}}
+
+/* Filled button palette shared across the website. */
+body .btn--primary,body .nav__actions .btn--primary{background:#000!important;border-color:#000!important;color:#fff!important;box-shadow:0 4px 12px #00000015}
+body .btn--primary:hover,body .nav__actions .btn--primary:hover{background:#242424!important;border-color:#242424!important;box-shadow:0 4px 12px #00000025}
+body .btn--outline:hover{background:#000;color:#fff;border-color:#000}
+body .q-nav-btn--answered{background:#000;color:#fff;border-color:#000}

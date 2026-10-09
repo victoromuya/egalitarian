@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Egalitarian Computers — Empowering Learners{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Egalitarian Computers offers world-class technology courses, bootcamps, and seminars. Join 28,000+ graduates from 150 countries.{% endblock %}">
+  {% load static %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+  {% block extra_css %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'css/typography.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- ── Navigation ──────────────────────────────────────────────── -->
+{% block navbar %}
+<nav class="nav" id="main-nav" aria-label="Main navigation">
+  <div class="container nav__inner">
+    <a href="{% url 'home' %}" class="nav__logo">
+      <img src="{% static 'images/logo.png' %}" alt="" width="44" height="44">
+      <span class="nav__wordmark">Egalitarian<span>Computers</span></span>
+    </a>
+
+    <div class="nav__menu" id="navigation-menu">
+    <ul class="nav__links">
+      <li><a href="{% url 'home' %}"        class="nav__link {% block nav_home %}{% endblock %}">Home</a></li>
+      <li><a href="{% url 'about' %}"       class="nav__link {% block nav_about %}{% endblock %}">About</a></li>
+      <li><a href="{% url 'course_list' %}" class="nav__link {% block nav_courses %}{% endblock %}">Courses</a></li>
+      <li><a href="{% url 'event_list' %}"  class="nav__link {% block nav_events %}{% endblock %}">Events</a></li>
+      <li><a href="{% url 'contact' %}"     class="nav__link {% block nav_contact %}{% endblock %}">Contact</a></li>
+    </ul>
+
+    <div class="nav__actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'notifications' %}" class="notif-bell" title="Notifications">
+          🔔
+          <span class="notif-badge">3</span>
+        </a>
+        <a href="{% url 'dashboard' %}" class="btn btn--outline btn--sm">Dashboard</a>
+        <a href="{% url 'logout' %}"    class="btn btn--ghost   btn--sm">Log Out</a>
+      {% else %}
+        <a href="{% url 'login' %}"    class="btn btn--ghost   btn--sm">Log In</a>
+        <a href="{% url 'register' %}" class="btn btn--primary btn--sm">Get Started <span aria-hidden="true">&#8599;</span></a>
+      {% endif %}
+    </div>
+    </div>
+
+    <button type="button" class="nav__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navigation-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+{% endblock %}
+
+<!-- ── Messages ────────────────────────────────────────────────── -->
+{% if messages %}
+<div class="container" style="padding-top:16px;">
+  {% for message in messages %}
+    <div class="alert alert--{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── Main content ─────────────────────────────────────────────── -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- ── Footer ───────────────────────────────────────────────────── -->
+{% block footer %}
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <h3>Egalitarian Computers</h3>
+        <p>A learned society is a progressive society. We are committed to democratizing technology education across Africa and the world.</p>
+        <div style="margin-top:20px; display:flex; gap:12px;">
+          <a href="#" style="color:var(--gray-400); font-size:1.2rem; transition:color .15s;" onmouseover="this.style.color='#60b8fa'" onmouseout="this.style.color='var(--gray-400)'">𝕏</a>
+          <a href="#" style="color:var(--gray-400); font-size:1.2rem;" onmouseover="this.style.color='#60b8fa'" onmouseout="this.style.color='var(--gray-400)'">in</a>
+          <a href="#" style="color:var(--gray-400); font-size:1.2rem;" onmouseover="this.style.color='#60b8fa'" onmouseout="this.style.color='var(--gray-400)'">▶</a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Learn</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'course_list' %}">All Courses</a></li>
+          <li><a href="{% url 'course_list' %}?category=Programming">Programming</a></li>
+          <li><a href="{% url 'course_list' %}?category=Web+Design">Web Design</a></li>
+          <li><a href="{% url 'event_list' %}">Events & Bootcamps</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'about' %}">About Us</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <div class="footer__contact-item">
+          <span class="icon">📍</span>
+          <span>No. 24, Oyekola Shopping Complex, Jakande Gate, Oke-Afa Isolo, Lagos</span>
+        </div>
+        <div class="footer__contact-item">
+          <span class="icon">📞</span>
+          <a href="tel:+2348124411984" style="color:var(--gray-400)">+234 (812) 441 1984</a>
+        </div>
+        <div class="footer__contact-item">
+          <span class="icon">✉️</span>
+          <a href="mailto:contactegalitarian@gmail.com" style="color:var(--gray-400)">contactegalitarian@gmail.com</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2026 Egalitarian Computers. All rights reserved.</span>
+      <div style="display:flex; gap:20px;">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+<script src="{% static 'js/navbar.js' %}" defer></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

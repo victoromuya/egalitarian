@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Register for {{ event.title }} — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:560px; padding-block:60px;">
+  <div class="breadcrumb" style="color:var(--gray-400);margin-bottom:28px;">
+    <a href="{% url 'event_list' %}" style="color:var(--gray-400);">Events</a> <span>/</span>
+    <a href="{% url 'event_detail' event.slug %}" style="color:var(--gray-400);">{{ event.title }}</a> <span>/</span>
+    <span>Register</span>
+  </div>
+
+  <h2 style="margin-bottom:6px;">Register <strong>for Event</strong></h2>
+  <p style="margin-bottom:28px;">No account required. Fill in your details to secure your spot.</p>
+
+  <div class="card" style="padding:20px; margin-bottom:24px; display:flex; gap:16px; align-items:center;">
+    <div style="font-size:2rem;">
+      {% if event.type == 'Bootcamp' %}🚀{% elif event.type == 'Seminar' %}🎙️{% else %}🔧{% endif %}
+    </div>
+    <div>
+      <span class="event-type-badge event-type-badge--{{ event.type|lower }}">{{ event.type }}</span>
+      <h4 style="margin:6px 0 2px;">{{ event.title }}</h4>
+      <div style="font-size:.82rem;color:var(--gray-400);">📅 {{ event.date }}</div>
+    </div>
+    <div style="margin-left:auto; text-align:right;">
+      <div style="font-size:1.2rem;font-weight:800;color:{% if event.price == 0 %}#16a34a{% else %}var(--primary){% endif %};">
+        {% if event.price == 0 %}Free{% else %}${{ event.price }}{% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if event.price > 0 %}
+    <div class="alert alert--warning" style="margin-bottom:20px;">
+      After submitting this form, you'll be redirected to WhatsApp to complete payment. Your registration is confirmed once our admin verifies your payment.
+    </div>
+  {% endif %}
+
+  <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow);">
+    <form method="post" action="">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input type="text" name="full_name" class="form-input" placeholder="Your full name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number *</label>
+        <input type="tel" name="phone" class="form-input" placeholder="+234 800 000 0000" required>
+      </div>
+      <button type="submit" class="btn btn--primary btn--full btn--lg">
+        {% if event.price > 0 %}Register & Proceed to Payment{% else %}Confirm Registration{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

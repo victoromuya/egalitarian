@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }} — Egalitarian Computers{% endblock %}
+{% block nav_courses %}nav__link--active{% endblock %}
+{% block meta_description %}{{ course.description }}{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a> <span>/</span>
+      <a href="{% url 'course_list' %}">Courses</a> <span>/</span>
+      <span>{{ course.title }}</span>
+    </div>
+    <span class="card__tag" style="margin-bottom:12px;display:inline-block;">{{ course.category }}</span>
+    <h1>{{ course.title }}</h1>
+    <p>{{ course.description }}</p>
+    <div style="display:flex;gap:20px;margin-top:16px;color:var(--blue-100);font-size:.88rem;flex-wrap:wrap;">
+      <span>⭐ 5.0 rating</span>
+      <span>⏱ {{ course.duration }}</span>
+      <span>📊 {{ course.level }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container detail-layout">
+
+    <!-- Main content -->
+    <div>
+      <h2 style="margin-bottom:20px;">What <strong>You'll Learn</strong></h2>
+      <div style="background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius);padding:24px;margin-bottom:36px;">
+        <ul class="syllabus-list">
+          {% for item in course.syllabus_items %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <h2 style="margin-bottom:12px;">Course <strong>Overview</strong></h2>
+      <p style="font-size:1rem;line-height:1.8;margin-bottom:32px;">{{ course.description }} This course is structured to take you from the foundational concepts all the way through to building real-world projects you can add to your portfolio. Each section builds on the last, ensuring you develop a complete, professional-level skill set.</p>
+
+      <h2 style="margin-bottom:16px;">Course <strong>Details</strong></h2>
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Duration</span>
+          <strong>{{ course.duration }}</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Level</span>
+          <strong>{{ course.level }}</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Category</span>
+          <strong>{{ course.category }}</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px;">
+          <span style="color:var(--gray-500);">Certification</span>
+          <strong>Yes — auto-issued on pass</strong>
+        </div>
+        <div class="sidebar-meta-item" style="padding:14px 20px; border-bottom:none;">
+          <span style="color:var(--gray-500);">Exam Format</span>
+          <strong>Multiple choice (auto-graded)</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="detail-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-price">
+          {% if course.price == 0 %}<span class="sidebar-price--free">Free</span>{% else %}${{ course.price }}{% endif %}
+        </div>
+
+        {% if user.is_authenticated %}
+          <a href="{% url 'enroll' course.slug %}" class="btn btn--primary btn--full" style="margin-bottom:12px;">Enroll Now</a>
+        {% else %}
+          <a href="{% url 'register' %}" class="btn btn--primary btn--full" style="margin-bottom:10px;">Create Account to Enroll</a>
+          <a href="{% url 'login' %}" class="btn btn--ghost btn--full" style="margin-bottom:12px;">Already have an account? Log in</a>
+        {% endif %}
+
+        <div class="alert alert--info" style="margin-top:4px;font-size:.82rem;">
+          After enrolling, pay via WhatsApp to unlock exam access and course content.
+        </div>
+
+        <div class="sidebar-meta" style="margin-top:16px;">
+          <div class="sidebar-meta-item">
+            <span>Duration</span><strong>{{ course.duration }}</strong>
+          </div>
+          <div class="sidebar-meta-item">
+            <span>Level</span><strong>{{ course.level }}</strong>
+          </div>
+          <div class="sidebar-meta-item">
+            <span>Certificate</span><strong>Yes ✓</strong>
+          </div>
+          <div class="sidebar-meta-item">
+            <span>Exam</span><strong>MCQ, auto-graded</strong>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+{% endblock %}

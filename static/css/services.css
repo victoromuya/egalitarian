@@ -1,0 +1,33 @@
+.services-section { padding-block:clamp(64px,7vw,104px); background:#f5f8fc; border-block:1px solid #e8eef5; }
+.services-section__layout { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.45fr); align-items:center; gap:clamp(32px,5vw,76px); }
+.services-section__intro { max-width:430px; }
+.services-section__eyebrow { display:inline-flex; align-items:center; gap:10px; color:var(--primary); font-size:.75rem; font-weight:750; letter-spacing:.14em; text-transform:uppercase; }
+.services-section__eyebrow::before { content:""; width:24px; height:2px; background:currentColor; }
+.services-section__intro h2 { margin:22px 0 20px; color:#0c1937; font-size:clamp(2.5rem,4.1vw,3.75rem); line-height:1.1; letter-spacing:-.05em; font-weight:750; }
+.services-section__intro h2 span { color:var(--primary); }
+.services-section__intro p { margin:0 0 30px; color:#526176; font-size:1rem; line-height:1.85; }
+.services-section__cta { display:inline-flex; align-items:center; justify-content:space-between; gap:28px; padding:16px 20px; border-radius:12px; background:#0c1937; color:#fff; font-size:.9rem; font-weight:650; transition:background .2s,transform .2s; }
+.services-section__cta span { font-size:1.25rem; }
+.services-section__cta:hover { transform:translateY(-2px); background:var(--primary-h); }
+.services-section__note { display:block; margin-top:16px; color:#526176; font-size:.78rem; }
+.services-section__grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.services-section__card { display:flex; flex-direction:column; position:relative; padding:clamp(22px,2.3vw,30px); border:1px solid #dfe7f1; border-radius:20px; background:#fff; transition:transform .2s,box-shadow .2s,border-color .2s; }
+.services-section__card:hover,.services-section__card:focus-within { transform:translateY(-4px); border-color:#a5c9e5; box-shadow:0 16px 36px rgba(19,45,80,.08); }
+.services-section__card--featured { background:#0c1937; border-color:#0c1937; }
+.services-section__number { position:absolute; top:30px; right:28px; color:#64748b; font-size:.75rem; font-weight:600; letter-spacing:.06em; }
+.services-section__icon { display:grid; width:52px; height:52px; margin-bottom:26px; place-items:center; border-radius:14px; background:#edf5fc; color:var(--primary); }
+.services-section__icon svg { width:25px; height:25px; }
+.services-section__card h3 { margin:0 0 12px; color:#0c1937; font-size:1.1rem; line-height:1.4; letter-spacing:-.02em; }
+.services-section__card p { margin:0 0 24px; color:#526176; font-size:.875rem; line-height:1.75; }
+.services-section__link { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:auto; padding-top:18px; border-top:1px solid #e8eef5; color:var(--primary-h); font-size:.8rem; font-weight:650; }
+.services-section__link span { font-size:1.2rem; transition:transform .2s; }
+.services-section__link:hover span { transform:translate(2px,-2px); }
+.services-section__card--featured h3,.services-section__card--featured .services-section__link { color:#fff; }
+.services-section__card--featured p,.services-section__card--featured .services-section__number { color:#bdcde1; }
+.services-section__card--featured .services-section__icon { background:#20334f; color:#9bd4ff; }
+.services-section__card--featured .services-section__link { border-color:#34445e; }
+.services-section a:focus-visible { outline:3px solid var(--blue-400); outline-offset:5px; }
+#software-services { scroll-margin-top:88px; }
+@media(max-width:980px) { .services-section__layout { grid-template-columns:1fr; gap:36px; } .services-section__intro { max-width:650px; } }
+@media(max-width:600px) { .services-section__grid { grid-template-columns:1fr; gap:16px; } .services-section__card { padding:26px; } .services-section__intro h2 { font-size:clamp(2.3rem,9vw,3rem); } }
+@media(prefers-reduced-motion:reduce) { .services-section__card,.services-section__cta,.services-section__link span { transition:none; } .services-section__card:hover,.services-section__card:focus-within,.services-section__cta:hover,.services-section__link:hover span { transform:none; } }

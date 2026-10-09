@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}My Courses — Egalitarian Computers{% endblock %}
+
+{% block content %}
+<div class="container dashboard-grid">
+
+  <!-- Sidebar nav -->
+  <aside class="dash-sidebar">
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--blue-100);display:flex;align-items:center;justify-content:center;font-size:1rem;">👤</div>
+      <div>
+        <div style="font-weight:600;font-size:.9rem;color:var(--gray-800);">{{ user.get_full_name|default:user.username }}</div>
+        <div style="font-size:.78rem;color:var(--gray-400);">Student</div>
+      </div>
+    </div>
+    <a href="{% url 'dashboard' %}"       class="dash-nav-link"><span class="icon">🏠</span> Overview</a>
+    <a href="{% url 'my_courses' %}"      class="dash-nav-link dash-nav-link--active"><span class="icon">📚</span> My Courses</a>
+    <a href="{% url 'notifications' %}"   class="dash-nav-link"><span class="icon">🔔</span> Notifications</a>
+    <a href="{% url 'profile' %}"         class="dash-nav-link"><span class="icon">⚙️</span> Profile</a>
+    <a href="{% url 'logout' %}"          class="dash-nav-link" style="margin-top:8px; border-top:1px solid var(--border); padding-top:16px;"><span class="icon">🚪</span> Log Out</a>
+  </aside>
+
+  <!-- Main -->
+  <div class="dash-main">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h2 style="margin-bottom:6px;">My <strong>Courses</strong></h2>
+        <p>All the courses you're enrolled in, in one place.</p>
+      </div>
+      <a href="{% url 'course_list' %}" class="btn btn--outline btn--sm">Browse Courses</a>
+    </div>
+
+    {% if items %}
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        {% for item in items %}
+          <div class="card" style="padding:20px 22px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:220px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
+                  <h4 style="margin:0;"><a href="{% url 'course_detail' item.course.slug %}" style="color:inherit;">{{ item.course.title }}</a></h4>
+                  {% if item.enrollment.is_paid %}
+                    <span class="card__tag" style="background:#d1fae5;color:#065f46;">Paid ✓</span>
+                  {% else %}
+                    <span class="card__tag" style="background:#fef3c7;color:#92400e;">Payment Pending</span>
+                  {% endif %}
+                </div>
+                <div style="font-size:.82rem;color:var(--gray-400);">
+                  {{ item.course.category }} · {{ item.course.level }} · Enrolled {{ item.enrollment.enrolled_at|date:"M d, Y" }}
+                  {% if item.submission_count %} · Exam attempts: {{ item.submission_count }}{% endif %}
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;">
+                <a href="{% url 'course_detail' item.course.slug %}" class="btn btn--ghost btn--sm">View Course</a>
+                {% if not item.enrollment.is_paid %}
+                  <a href="{% url 'enroll' item.course.slug %}" class="btn btn--primary btn--sm">Complete Payment</a>
+                {% elif item.certificate %}
+                  <a href="{% url 'exam_result' item.course.slug %}" class="btn btn--outline btn--sm">Exam Result</a>
+                  <a href="{% url 'certificate_download' item.course.slug %}" class="btn btn--primary btn--sm">📜 Certificate</a>
+                {% elif item.exam %}
+                  {% if item.submission_count %}
+                    <a href="{% url 'exam_result' item.course.slug %}" class="btn btn--outline btn--sm">Last Result</a>
+                    <a href="{% url 'exam_take' item.course.slug %}" class="btn btn--primary btn--sm">Retake Exam</a>
+                  {% else %}
+                    <a href="{% url 'exam_take' item.course.slug %}" class="btn btn--primary btn--sm">Take Exam</a>
+                  {% endif %}
+                {% else %}
+                  <span class="card__tag" style="background:var(--gray-50);color:var(--gray-400);">No exam yet</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state" style="background:var(--gray-50);border-radius:var(--radius-lg);border:1px dashed var(--gray-200);">
+        <div class="empty-state__icon">📚</div>
+        <h3>No enrollments yet</h3>
+        <p>Browse our course catalogue and enroll in your first course today.</p>
+        <a href="{% url 'course_list' %}" class="btn btn--primary" style="margin-top:16px;">Explore Courses</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
