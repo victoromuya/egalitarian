@@ -32,7 +32,7 @@
       <h2 style="margin-bottom:16px;">What Will <strong>Be Covered</strong></h2>
       <div style="background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius);padding:24px;margin-bottom:32px;">
         <ul class="syllabus-list">
-          {% for topic in event.topics %}
+          {% for topic in event.topics_items %}
             <li>{{ topic }}</li>
           {% endfor %}
         </ul>

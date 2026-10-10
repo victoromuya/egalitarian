@@ -31,6 +31,10 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('event_detail', args=[self.slug])
+
     def save(self, *args, **kwargs):
         if not self._state.adding:
             original = (
@@ -83,6 +87,7 @@ class EventRegistration(models.Model):
     phone = models.CharField(max_length=30)
     is_paid = models.BooleanField(default=False)
     registered_at = models.DateTimeField(auto_now_add=True)
+    confirmation_email_sent_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['-registered_at']

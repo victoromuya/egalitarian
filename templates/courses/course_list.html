@@ -1,61 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Courses — Egalitarian Computers{% endblock %}
-{% block nav_courses %}nav__link--active{% endblock %}
-
+{% load static %}
+{% block title %}Courses ? Egalitarian Computers{% endblock %}
+{% block body_class %}learning-home catalogue-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/homepage.css' %}"><link rel="stylesheet" href="{% static 'css/course-catalogue.css' %}">{% endblock %}
+{% block navbar %}{% include "partials/home_navbar.html" %}{% endblock %}
 {% block content %}
-
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Courses</span></div>
-    <h1>Our Course Catalogue</h1>
-    <p>{{ courses|length }} courses across programming, web design, business, and more.</p>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-
-    <!-- Filter -->
-    <div class="filter-bar">
-      {% for cat in categories %}
-        <a href="?category={{ cat }}" class="filter-btn {% if cat == active_category %}filter-btn--active{% endif %}">{{ cat }}</a>
-      {% endfor %}
-    </div>
-
-    <!-- Grid -->
-    {% if courses %}
-      <div class="grid-3">
-        {% for course in courses %}
-          <a href="{% url 'course_detail' course.slug %}" class="card" style="display:block;color:inherit;">
-            <div class="card__img">
-              {% if course.category == 'Programming' %}💻
-              {% elif course.category == 'Web Design' %}🎨
-              {% elif course.category == 'Business' %}🖨️
-              {% else %}📖{% endif %}
-            </div>
-            <div class="card__body">
-              <span class="card__tag">{{ course.category }}</span>
-              <h3 class="card__title">{{ course.title }}</h3>
-              <div class="card__meta">{{ course.level }} &bull; {{ course.duration }}</div>
-              <div class="card__price">${{ course.price }}</div>
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:.82rem;color:var(--gray-400);">⭐ 5.0</span>
-                <span class="btn btn--outline btn--sm" style="pointer-events:none;">View →</span>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="empty-state">
-        <div class="empty-state__icon">📭</div>
-        <h3>No courses in this category yet</h3>
-        <p>Check back soon or browse all categories.</p>
-        <a href="{% url 'course_list' %}" class="btn btn--primary" style="margin-top:16px;">View All</a>
-      </div>
-    {% endif %}
-
-  </div>
-</section>
-
+<section class="catalogue-hero" aria-labelledby="catalogue-title"><div class="home-container catalogue-hero-grid"><div><a href="{% url 'home' %}" class="catalogue-back">Home / Courses</a><span class="catalogue-eyebrow">Egalitarian Computers / Learning paths</span><h1 id="catalogue-title">Your next chapter.<br><strong>A new skill.</strong></h1><p>Build the confidence to create, solve, and move forward. Discover practical courses in data, web development, blockchain, and desktop publishing.</p><a href="#catalogue-courses" class="home-button">Explore the catalogue <span aria-hidden="true">&#8595;</span></a></div><div class="catalogue-note"><span class="catalogue-note-label">Make your next move</span><strong>{{ course_count|stringformat:'02d' }}</strong><span class="catalogue-note-caption">courses. Endless possibilities.</span><p>Start with curiosity.<br>Leave with something you can use.</p><div class="catalogue-note-bottom"><span>Practical learning</span><span>Certificates included</span></div></div></div></section>
+<section class="catalogue-library" id="catalogue-courses" aria-labelledby="catalogue-library-title"><div class="home-container"><div class="catalogue-library-heading"><div><span class="catalogue-eyebrow">Choose where you want to go</span><h2 id="catalogue-library-title">Explore our<br><strong>Courses</strong></h2></div><p>Find a learning path that fits your goals. View each course for its curriculum, level, duration, and enrollment details.</p></div><nav class="catalogue-filters" aria-label="Filter courses">{% for category in categories %}<a href="?category={{ category|urlencode }}#catalogue-courses"{% if category == active_category %} class="is-active" aria-current="true"{% endif %}>{{ category }}</a>{% endfor %}{% if legacy_category %}<a class="is-active" aria-current="true" href="?category={{ legacy_category|urlencode }}#catalogue-courses">{{ legacy_category }}</a>{% endif %}</nav><div class="catalogue-results"><span>{{ courses|length }} course{{ courses|length|pluralize }}{% if active_category != 'All' %} in {{ active_category }}{% endif %}</span><span>Learn at your pace. Build your future.</span></div>{% if courses %}<div class="popular-grid catalogue-grid">{% for course in courses %}{% include "partials/home_course_card.html" %}{% endfor %}</div>{% else %}<div class="catalogue-empty"><h3>Your next opportunity is on its way.</h3><p>There are no courses in this category yet. Explore the full catalogue to find another path.</p><a href="{% url 'course_list' %}#catalogue-courses" class="home-button">View all courses</a></div>{% endif %}</div></section>
+<section class="catalogue-help"><div class="home-container"><div><span class="catalogue-eyebrow">A little guidance goes a long way</span><h2>Find your<br><strong>Starting point.</strong></h2><p>Unsure which course fits your goals? Tell us where you want to go and we?ll help you choose your next step.</p></div><a href="{% url 'contact' %}" class="home-button">Talk to our team <span aria-hidden="true">&#8599;</span></a></div></section>
 {% endblock %}
+{% block footer %}{% include "partials/home_footer.html" %}{% endblock %}

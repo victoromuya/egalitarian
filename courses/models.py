@@ -32,6 +32,10 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('course_detail', args=[self.slug])
+
     def save(self, *args, **kwargs):
         if not self._state.adding:
             original_price = (

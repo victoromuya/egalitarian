@@ -10,7 +10,7 @@
   </div>
 
   <h2 style="margin-bottom:6px;">Register <strong>for Event</strong></h2>
-  <p style="margin-bottom:28px;">No account required. Fill in your details to secure your spot.</p>
+  <p style="margin-bottom:28px;">No account required. Register below and receive the event details by email.</p>
 
   <div class="card" style="padding:20px; margin-bottom:24px; display:flex; gap:16px; align-items:center;">
     <div style="font-size:2rem;">
@@ -37,18 +37,9 @@
   <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow);">
     <form method="post" action="">
       {% csrf_token %}
-      <div class="form-group">
-        <label class="form-label">Full Name *</label>
-        <input type="text" name="full_name" class="form-input" placeholder="Your full name" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Email Address *</label>
-        <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Phone Number *</label>
-        <input type="tel" name="phone" class="form-input" placeholder="+234 800 000 0000" required>
-      </div>
+      {% if form.errors %}<p class="alert alert--error" role="alert">Please check your details below.</p>{% endif %}
+      {{ form.non_field_errors }}
+      {% for field in form %}<div class="form-group"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }} *</label>{{ field }}{% for error in field.errors %}<p style="color:#a32939;font-size:13px;">{{ error }}</p>{% endfor %}</div>{% endfor %}
       <button type="submit" class="btn btn--primary btn--full btn--lg">
         {% if event.price > 0 %}Register & Proceed to Payment{% else %}Confirm Registration{% endif %}
       </button>

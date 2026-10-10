@@ -74,11 +74,30 @@ def about(request):
         {'name': 'Michael Nnadi', 'role': 'Co-Founder & CEO', 'bio': 'A serial entrepreneur and investor leading Egalitarian Computers toward its mission of democratizing tech education across Africa and beyond.'},
         {'name': 'Edwin Osamezu', 'role': 'Co-Founder & Lead Instructor', 'bio': 'An experienced educator with decades of training and workshop facilitation, driving the curriculum and learner outcomes at Tech Egalitarian.'},
     ]
-    return render(request, 'core/about.html', {'team': team})
+    return render(request, 'core/about.html', {
+        'team': team,
+        'build_whatsapp_url': f'https://wa.me/{settings.WHATSAPP_NUMBER}',
+    })
 
 
 def contact(request):
-    return render(request, 'core/contact.html')
+    import re
+    from .forms import ContactForm
+
+    form = ContactForm(request.POST if request.method == 'POST' else None)
+    if request.method == 'POST' and form.is_valid():
+        data = form.cleaned_data
+        message = (
+            f"Hello Egalitarian Computers!\n\nSubject: {data['subject']}"
+            f"\nName: {data['name']}\nEmail: {data['email']}"
+            f"\nPhone: {data['phone'] or 'Not provided'}\n\n{data['message']}"
+        )
+        number = re.sub(r'[^0-9]', '', settings.WHATSAPP_NUMBER)
+        return redirect(f'https://wa.me/{number}?text={quote(message)}')
+    return render(request, 'core/contact.html', {
+        'contact_form': form,
+        'build_whatsapp_url': f'https://wa.me/{settings.WHATSAPP_NUMBER}',
+    })
 
 
 @login_required

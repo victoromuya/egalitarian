@@ -1,20 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Egalitarian Computers — Grow your skills{% endblock %}
-{% block body_class %}learning-home{% endblock %}
+{% block body_class %}learning-home homepage{% endblock %}
 
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/homepage.css' %}">{% endblock %}
-{% block navbar %}
-<nav class="nav" id="main-nav" aria-label="Main navigation">
-  <div class="container nav__inner">
-    <a href="{% url 'home' %}" class="nav__logo" aria-label="Egalitarian Computers home"><img src="{% static 'images/logo.png' %}" alt="" width="40" height="40"><span class="nav__wordmark">Egalitarian<span>Computers</span></span></a>
-    <div class="nav__menu" id="navigation-menu"><ul class="nav__links"><li><a href="{% url 'course_list' %}" class="nav__link">Courses</a></li><li><a href="#software-services" class="nav__link">Our Services</a></li><li><a href="{% url 'about' %}" class="nav__link">About Us</a></li><li><a href="{% url 'contact' %}" class="nav__link">Contact</a></li></ul>
-      <div class="nav__actions">{% if user.is_authenticated %}<a href="{% url 'dashboard' %}" class="btn btn--primary btn--sm">Dashboard</a><a href="{% url 'logout' %}" class="btn btn--ghost btn--sm">Log Out</a>{% else %}<a href="{% url 'login' %}" class="btn btn--ghost btn--sm">Log In</a><a href="{% url 'register' %}" class="btn btn--primary btn--sm">Get Started</a>{% endif %}</div>
-    </div>
-    <button type="button" class="nav__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navigation-menu"><span></span><span></span><span></span></button>
-  </div>
-</nav>
-{% endblock %}
+{% block navbar %}{% include "partials/home_navbar.html" %}{% endblock %}
 {% block content %}
 <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2Zm0 0v16M6 7h3M6 11h3m6-4h3m-3 4h3"/></symbol>
@@ -72,15 +62,7 @@
     <div class="course-filters" role="group" aria-label="Filter courses">{% for category in course_categories %}<button type="button"{% if forloop.first %} class="is-active"{% endif %} data-course-filter="{{ category }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ category }}</button>{% endfor %}</div>
     <div class="popular-grid">
       {% for course in featured_courses %}
-      <article class="popular-card" data-course-category="{{ course.home_group }}"{% if not course.home_visible %} hidden{% endif %}>
-
-        <span class="course-level">{{ course.level }}</span>
-        <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
-        <p class="course-description">{{ course.description }}</p>
-        <div class="course-meta"><span>{{ course.duration }}</span><span>{{ course.syllabus_items|length }} topics</span></div>
-        <div class="course-certificate">Certificate included</div>
-        <div class="course-bottom"><div class="course-pricing"><span>Course fee</span><strong>{% if course.is_free %}Free{% else %}${{ course.price }}{% endif %}</strong></div><a href="{% url 'course_detail' course.slug %}" class="course-details-link" aria-label="View {{ course.title }}">View course</a></div>
-      </article>
+      {% include "partials/home_course_card.html" with hide_nonfeatured=True %}
       {% empty %}<p class="home-empty">New courses are on the way. Explore our learning opportunities.</p>{% endfor %}
     </div>
     <p class="home-empty" id="course-filter-empty"{% if not initial_group_empty %} hidden{% endif %}>More courses in this category are coming soon. <a href="{% url 'course_list' %}">Explore the full catalogue &#8594;</a></p>
@@ -102,7 +84,7 @@
   <div class="events-full-width">
     <div class="events-editorial-heading"><div><span class="events-eyebrow">Learn together. Go further.</span><h2 id="events-title">Upcoming<br><strong>Events</strong></h2></div><div class="events-heading-copy"><p>Step beyond the lesson. Join practical workshops, focused bootcamps, and conversations that connect you with new ideas and skills.</p><a href="{% url 'event_list' %}" class="events-all-link">Explore all events <span aria-hidden="true">&#8599;</span></a></div></div>
     <div class="events-agenda">
-      {% for event in upcoming_events %}
+      {% for event in upcoming_events|slice:":2" %}
       <article class="agenda-event">
         <div class="agenda-index"><span>0{{ forloop.counter }}</span><span class="agenda-type">{{ event.type }}</span></div>
         <div class="agenda-main"><h3><a href="{% url 'event_detail' event.slug %}">{{ event.title }}</a></h3><p>{{ event.description|truncatewords:32 }}</p><div class="agenda-topics">{% for topic in event.topics_items|slice:':3' %}<span>{{ topic }}</span>{% endfor %}</div></div>
@@ -118,5 +100,5 @@
 </section>
 <section class="home-newsletter" aria-labelledby="newsletter-title"><div class="home-container"><div class="newsletter-panel"><h2 id="newsletter-title">Subscribe To Get<br><strong>Updates</strong></h2><p>Stay inspired with the latest courses, learning tips, and events.</p><form action="{% url 'newsletter_subscribe' %}" method="post" id="newsletter-form">{% csrf_token %}<label class="visually-hidden" for="newsletter-email">Your email address</label><input id="newsletter-email" type="email" name="email" placeholder="Enter your email" autocomplete="email" maxlength="254" required><button type="submit" class="home-button">Subscribe</button></form><p class="newsletter-status" id="newsletter-status" role="status" aria-live="polite"></p></div></div></section>
 {% endblock %}
-{% block footer %}<footer class="home-footer"><div class="home-container"><div class="home-footer-grid"><div class="home-footer-brand"><a href="{% url 'home' %}" class="footer-logo"><img src="{% static 'images/logo.png' %}" alt="" width="40" height="40"><strong>Egalitarian<span>Computers</span></strong></a><p>A learned society is a<br>progressive society.</p><a class="footer-contact" href="mailto:contactegalitarian@gmail.com">Let’s stay in touch ↗</a></div><div><h3>Course Categories</h3><a href="{% url 'course_list' %}?category=Programming">Programming</a><a href="{% url 'course_list' %}?category=Web+Design">Web Design</a><a href="{% url 'course_list' %}?category=Business">Business</a><a href="{% url 'course_list' %}?category=Language">Languages</a><a href="{% url 'course_list' %}?category=Photography">Photography</a></div><div><h3>Resources</h3><a href="{% url 'course_list' %}">Courses</a><a href="{% url 'event_list' %}">Workshops</a><a href="{% url 'event_list' %}">Bootcamps</a><a href="{% url 'course_list' %}">Learning resources</a></div><div><h3>Quick Links</h3><a href="{% url 'about' %}">About us</a><a href="{% url 'contact' %}">Contact</a><a href="{% url 'register' %}">Get started</a><a href="{% url 'login' %}">Student login</a></div><div><h3>More</h3><a href="{{ build_whatsapp_url }}" target="_blank" rel="noopener">Build with us</a><a href="{% url 'contact' %}">Support</a><a href="tel:+2348124411984">+234 812 441 1984</a><p>Lagos, Nigeria</p></div></div><p class="home-copyright">© {% now 'Y' %} Egalitarian Computers. All rights reserved.</p></div></footer>{% endblock %}
+{% block footer %}{% include "partials/home_footer.html" %}{% endblock %}
 {% block extra_js %}<script src="{% static 'js/homepage.js' %}" defer></script>{% endblock %}

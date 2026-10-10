@@ -2,6 +2,10 @@ from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib import messages
+from django.db import transaction, connection
+from django.db.models import F
+from .forms import EventRegistrationForm
+from .emails import send_registration_confirmation
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import Event, EventRegistration
@@ -28,29 +32,37 @@ def event_detail(request, slug):
 
 def event_register(request, slug):
     event = get_object_or_404(Event, slug=slug)
+    form = EventRegistrationForm(request.POST if request.method == 'POST' else None)
+
+    if request.method == 'POST' and form.is_valid():
+        with transaction.atomic():
+            if connection.vendor == 'sqlite':
+                # SQLite has no row locks: obtain its write lock before counting seats.
+                Event.objects.filter(pk=event.pk).update(title=F('title'))
+            event = Event.objects.select_for_update().get(pk=event.pk)
+            if EventRegistration.objects.filter(event=event, email__iexact=form.cleaned_data['email']).exists():
+                messages.info(request, 'A registration with this email already exists for this event. Contact us if you need help.')
+                return redirect('event_detail', slug=event.slug)
+            if event.is_full:
+                messages.error(request, 'Sorry, this event is at full capacity.')
+                return redirect('event_detail', slug=event.slug)
+            registration = EventRegistration.objects.create(event=event, **form.cleaned_data)
+
+        sent = send_registration_confirmation(registration)
+        if sent:
+            messages.success(request, 'Your registration is saved. A confirmation email has been sent to you.')
+        else:
+            messages.warning(request, 'Your registration is saved, but we could not send your confirmation email. Please contact us for assistance.')
+        if event.is_free:
+            return redirect('event_detail', slug=event.slug)
+        whatsapp_message = quote(
+            f'Hi, I would like to pay for the event "{event.title}" '
+            f'(${event.price}). My name is {registration.full_name}. '
+            f'My registration reference is {registration.pk}.'
+        )
+        return redirect(f'https://wa.me/{settings.WHATSAPP_NUMBER}?text={whatsapp_message}')
 
     if event.is_full:
         messages.error(request, 'Sorry, this event is at full capacity.')
         return redirect('event_detail', slug=event.slug)
-
-    if request.method == 'POST':
-        full_name = request.POST.get('full_name', '').strip()
-        email = request.POST.get('email', '').strip()
-        phone = request.POST.get('phone', '').strip()
-
-        registration = EventRegistration.objects.create(
-            event=event, full_name=full_name, email=email, phone=phone,
-        )
-
-        if event.is_free:
-            messages.success(request, f'You are registered for {event.title}.')
-            return redirect('event_detail', slug=event.slug)
-
-        whatsapp_message = quote(
-            f'Hi, I would like to pay for the event "{event.title}" '
-            f'(${event.price}). My name is {full_name}.'
-        )
-        whatsapp_url = f'https://wa.me/{settings.WHATSAPP_NUMBER}?text={whatsapp_message}'
-        return redirect(whatsapp_url)
-
-    return render(request, 'events/event_register.html', {'event': event})
+    return render(request, 'events/event_register.html', {'event': event, 'form': form})

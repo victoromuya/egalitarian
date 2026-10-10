@@ -1,105 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Contact — Egalitarian Computers{% endblock %}
-{% block nav_contact %}nav__link--active{% endblock %}
-
+{% load static %}
+{% block title %}Contact Us - Egalitarian Computers{% endblock %}
+{% block body_class %}learning-home contact-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/homepage.css' %}"><link rel="stylesheet" href="{% static 'css/contact.css' %}?v=3">{% endblock %}
+{% block navbar %}{% include "partials/home_navbar.html" %}{% endblock %}
 {% block content %}
-
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Contact</span></div>
-    <h1>Get In Touch</h1>
-    <p>We'd love to hear from you. Reach out for admissions, partnerships, or general inquiries.</p>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-    <div class="grid-2" style="gap:60px;">
-
-      <!-- Contact Info -->
-      <div>
-        <h2 style="margin-bottom:28px;">Contact <strong>Information</strong></h2>
-
-        <div style="display:flex; flex-direction:column; gap:24px; margin-bottom:40px;">
-          <div style="display:flex; gap:16px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">📍</div>
-            <div>
-              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Physical Address</div>
-              <p style="font-size:.92rem;">No. 24, Oyekola Shopping Complex,<br>Jakande Gate, Oke-Afa Isolo,<br>Lagos, Nigeria</p>
-            </div>
-          </div>
-
-          <div style="display:flex; gap:16px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">📞</div>
-            <div>
-              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Phone / WhatsApp</div>
-              <a href="tel:+2348124411984" style="color:var(--primary); font-size:.95rem;">+234 (812) 441 1984</a>
-            </div>
-          </div>
-
-          <div style="display:flex; gap:16px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">✉️</div>
-            <div>
-              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Email</div>
-              <a href="mailto:contactegalitarian@gmail.com" style="color:var(--primary); font-size:.95rem;">contactegalitarian@gmail.com</a>
-            </div>
-          </div>
-
-          <div style="display:flex; gap:16px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--blue-50); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">🕐</div>
-            <div>
-              <div style="font-weight:600; margin-bottom:4px; color:var(--gray-800);">Office Hours</div>
-              <p style="font-size:.92rem;">Monday – Friday: 8:00 AM – 6:00 PM WAT<br>Saturday: 9:00 AM – 2:00 PM WAT</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="alert alert--info">
-          <strong>Payment Enquiries:</strong> For course or event payments, please reach out via WhatsApp after enrolling. Our admin team will provide account details and confirm your payment.
-        </div>
-      </div>
-
-      <!-- Contact Form -->
-      <div>
-        <h2 style="margin-bottom:28px;">Send Us <strong>a Message</strong></h2>
-        <div style="background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:36px; box-shadow:var(--shadow);">
-          <form method="post" action="">
-            {% csrf_token %}
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-input" placeholder="Your full name" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input type="email" class="form-input" placeholder="you@example.com" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Phone Number</label>
-              <input type="tel" class="form-input" placeholder="+234 800 000 0000">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Subject</label>
-              <select class="form-input">
-                <option value="">Select a subject</option>
-                <option>Course Enquiry</option>
-                <option>Event Registration</option>
-                <option>Payment Confirmation</option>
-                <option>Technical Support</option>
-                <option>Partnership / Business</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Message</label>
-              <textarea class="form-input" rows="5" placeholder="Tell us how we can help..." required style="resize:vertical;"></textarea>
-            </div>
-            <button type="submit" class="btn btn--primary btn--full">Send Message</button>
-          </form>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
+<section class="contact-simple" aria-labelledby="contact-title"><div class="home-container contact-simple-layout"><div class="contact-simple-main"><h1 id="contact-title">Get <strong>in touch</strong></h1><p class="contact-simple-lead">Have a question or need help? We are here for you.</p><form method="post" action="{% url 'contact' %}" id="contact-form">{% csrf_token %}{% if contact_form.errors %}<p class="contact-form-error" role="alert">Please check the highlighted fields before continuing.</p>{% endif %}<div class="contact-fields">{% for field in contact_form %}<div class="contact-field{% if field.name == 'message' %} contact-field--wide{% endif %}{% if field.errors %} has-error{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="contact-required" aria-hidden="true"> *</span>{% endif %}</label>{{ field }}{% for error in field.errors %}<span class="contact-field-error">{{ error }}</span>{% endfor %}</div>{% endfor %}</div><button type="submit" class="home-button contact-submit">Continue on WhatsApp <span aria-hidden="true">&#8599;</span></button><p class="contact-form-note">WhatsApp opens with your message ready to review and send.</p></form></div>
+<aside class="contact-info-panel" aria-label="Contact information"><div><h2>Address</h2><p>No. 24, Oyekola Shopping Complex,<br>Jakande Gate, Oke-Afa Isolo,<br>Lagos, Nigeria</p><a href="https://www.google.com/maps/search/?api=1&amp;query=24%20Oyekola%20Shopping%20Complex%20Jakande%20Gate%20Oke-Afa%20Isolo%20Lagos" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">&#8599;</span></a></div><div><h2>Contact</h2><a href="tel:+2348124411984">+234 812 441 1984</a><a href="mailto:contactegalitarian@gmail.com">contactegalitarian@gmail.com</a></div><div><h2>Office hours</h2><p>Monday-Friday: 8:00 AM-6:00 PM<br>Saturday: 9:00 AM-2:00 PM<br><span class="contact-timezone">West Africa Time (WAT)</span></p></div><a class="contact-direct-chat" href="{{ whatsapp_contact_url }}" target="_blank" rel="noopener noreferrer">Chat with us on WhatsApp <span aria-hidden="true">&#8599;</span></a></aside>
+</div></section>
+<section class="contact-map" aria-label="Find our Lagos office"><iframe title="Map showing Oyekola Shopping Complex, Jakande Gate, Oke-Afa Isolo, Lagos" src="https://www.google.com/maps?q=24%20Oyekola%20Shopping%20Complex%20Jakande%20Gate%20Oke-Afa%20Isolo%20Lagos&amp;output=embed" width="100%" height="340" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div class="contact-map-caption"><span>Visit Egalitarian Computers in Lagos</span><a href="https://www.google.com/maps/search/?api=1&amp;query=24%20Oyekola%20Shopping%20Complex%20Jakande%20Gate%20Oke-Afa%20Isolo%20Lagos" target="_blank" rel="noopener noreferrer">Open in Google Maps <span aria-hidden="true">&#8599;</span></a></div></section>
 {% endblock %}
+{% block footer %}{% include "partials/home_footer.html" %}{% endblock %}

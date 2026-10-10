@@ -1,0 +1,9 @@
+<article class="popular-card" data-course-category="{{ course.home_group }}"{% if hide_nonfeatured and not course.home_visible %} hidden{% endif %}>
+
+        <span class="course-level">{{ course.level }}</span>
+        <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
+        <p class="course-description">{{ course.description }}</p>
+        <div class="course-meta"><span>{{ course.duration }}</span><span>{{ course.syllabus_items|length }} topics</span></div>
+        <div class="course-certificate">Certificate included</div>
+        <div class="course-bottom"><div class="course-pricing"><span>Course fee</span><strong>{% if course.is_free %}Free{% else %}${{ course.price }}{% endif %}</strong></div><a href="{% url 'course_detail' course.slug %}" class="course-details-link" aria-label="View {{ course.title }}">View course</a></div>
+      </article>

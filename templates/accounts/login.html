@@ -1,37 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Log In — Egalitarian Computers{% endblock %}
-
-{% block content %}
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-card__logo">
-      <img src="{% static 'images/logo.png' %}" alt="Egalitarian Computers" onerror="this.style.display='none'">
-      <div style="font-weight:700; font-size:1rem; color:var(--blue-700);">Egalitarian Computers</div>
-    </div>
-
-    <h2>Welcome <strong>Back</strong></h2>
-    <p class="auth-card__sub">Log in to access your courses, exams, and certificates.</p>
-
-    <form method="post" action="">
-      {% csrf_token %}
-      <div class="form-group">
-        <label class="form-label">Username or Email</label>
-        <input type="text" name="username" class="form-input" placeholder="Enter your username" required autofocus>
-      </div>
-      <div class="form-group">
-        <label class="form-label" style="display:flex;justify-content:space-between;">
-          Password
-          <a href="#" style="font-weight:400; color:var(--primary); font-size:.82rem;">Forgot password?</a>
-        </label>
-        <input type="password" name="password" class="form-input" placeholder="Enter your password" required>
-      </div>
-      <button type="submit" class="btn btn--primary btn--full btn--lg" style="margin-top:4px;">Log In</button>
-    </form>
-
-    <div class="auth-divider" style="margin-top:20px;">
-      Don't have an account? <a href="{% url 'register' %}">Create one free</a>
-    </div>
-  </div>
-</div>
-{% endblock %}
+{% block body_class %}learning-home account-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/homepage.css' %}"><link rel="stylesheet" href="{% static 'css/auth-modern.css' %}">{% endblock %}
+{% block navbar %}{% include "partials/home_navbar.html" %}{% endblock %}
+{% block footer %}{% include "partials/home_footer.html" %}{% endblock %}
+{% block extra_js %}<script src="{% static 'js/auth-modern.js' %}" defer></script>{% endblock %}
+{% block title %}Log In ? Egalitarian Computers{% endblock %}
+{% block content %}<section class="account-stage" aria-labelledby="account-title"><div class="home-container account-layout"><div class="account-intro"><span class="account-eyebrow">Your learning journey continues</span><h1 id="account-title">Welcome<br><strong>back.</strong></h1><p>Pick up where you left off.<br>Your next breakthrough is waiting.</p></div><div class="account-form-shell"><div class="account-form-panel"><span class="account-eyebrow">Your personal learning space</span><h2>Log <strong>In</strong></h2><p class="account-form-intro">Good to see you again. Enter your details to continue.</p><form method="post" action="{% url 'login' %}">{% csrf_token %}<div class="account-fields"><div class="account-field"><label for="login-username">Username</label><input id="login-username" type="text" name="username" placeholder="Your username" value="{{ request.POST.username }}" autocomplete="username" required maxlength="150"></div><div class="account-field"><label for="login-password">Password</label><div class="account-password"><input id="login-password" type="password" name="password" placeholder="Your password" autocomplete="current-password" required><button type="button" data-password-toggle="login-password" aria-controls="login-password" aria-pressed="false" aria-label="Show password">Show</button></div></div></div><a href="{% url 'password_reset' %}" class="account-help">Forgot your password?</a><button type="submit" class="home-button account-submit">Log in <span aria-hidden="true">&#8599;</span></button></form><div class="account-switch"><span>New to Egalitarian?</span><a href="{% url 'register' %}">Create an account <span aria-hidden="true">&#8599;</span></a></div><p class="account-small">Your courses, exams, and certificates. All in one place.</p></div></div></div></section>{% endblock %}

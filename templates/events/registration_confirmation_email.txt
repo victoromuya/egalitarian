@@ -1,0 +1,17 @@
+Hello {{ registration.full_name }},
+
+Thank you for registering with Egalitarian Computers.
+
+Event: {{ event.title }}
+Registration reference: {{ registration.pk }}
+Date: {{ event.date }}
+Time: {{ event.time }}
+Location: {{ event.location }}
+
+{% if registration.is_paid %}Your registration is confirmed. We look forward to seeing you!{% else %}Your registration has been received and is awaiting payment confirmation.
+Fee: ${{ event.price }}
+Please follow the WhatsApp payment instructions from the registration page. Our admin team will confirm your payment. This email is not proof of payment.{% endif %}
+
+Questions? Contact contactegalitarian@gmail.com or +234 812 441 1984.
+
+Egalitarian Computers

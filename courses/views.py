@@ -12,14 +12,26 @@ CATEGORIES = ['All'] + [choice[0]
 
 
 def course_list(request):
-    category = request.GET.get('category', 'All')
-    courses = Course.objects.all()
-    if category and category != 'All':
-        courses = courses.filter(category=category)
+    from core.homepage import COURSE_GROUPS, course_group
+
+    category = request.GET.get('category', 'All') or 'All'
+    all_courses = list(Course.objects.all())
+    for course in all_courses:
+        course.home_group = course_group(course)
+    if category in COURSE_GROUPS:
+        courses = [course for course in all_courses if course.home_group == category]
+    elif category == 'All':
+        courses = all_courses
+    else:
+        # Preserve links that use the original catalogue categories.
+        courses = [course for course in all_courses if course.category == category]
     return render(request, 'courses/course_list.html', {
         'courses': courses,
-        'categories': CATEGORIES,
+        'course_count': len(all_courses),
+        'categories': ['All'] + COURSE_GROUPS,
         'active_category': category,
+        'legacy_category': category if category not in ['All'] + COURSE_GROUPS else '',
+        'build_whatsapp_url': f'https://wa.me/{settings.WHATSAPP_NUMBER}',
     })
 
 

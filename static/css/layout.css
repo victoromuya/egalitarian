@@ -1,0 +1,19 @@
+/* Shared section edges matching Upcoming Events; component sizing stays local. */
+:root{--site-gutter:clamp(24px,5vw,100px)}
+body.learning-home .home-container,
+body.learning-home .nav .container,
+body.contact-page .contact-map{
+  width:calc(100% - var(--site-gutter) - var(--site-gutter))!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+  padding-inline:0!important;
+}
+/* Remove outer insets so containers share the same viewport alignment. */
+body.learning-home :is(.nav,.career-hero,.engineering-services,.popular,.catalogue-hero,.catalogue-library){margin-inline:0!important}
+body .events-full-width{width:100%;max-width:none;padding-inline:var(--site-gutter)}
+@media(max-width:760px){:root{--site-gutter:20px}}
+@media(max-width:380px){:root{--site-gutter:16px}}
+
+/* Preserve inner breathing room in the About introduction panel. */
+body.learning-home.about-page .home-container.about-mission-panel{padding-inline:clamp(28px,3.5vw,55px)!important}
+@media(max-width:760px){body.learning-home.about-page .home-container.about-mission-panel{padding-inline:22px!important}}

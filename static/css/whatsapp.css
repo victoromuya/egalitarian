@@ -1,0 +1,8 @@
+/* Viewport-fixed contact button, independent of page-specific styles. */
+body>a.whatsapp-float{position:fixed!important;inset:auto calc(28px + env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) auto!important;z-index:2147483647!important;display:grid!important;place-items:center;width:62px;height:62px;padding:15px;margin:0;border:0;border-radius:50%;background:#25d366!important;color:#fff!important;box-shadow:0 8px 28px #075e5440,0 2px 7px #00000020;isolation:isolate;opacity:1;visibility:visible;pointer-events:auto;overflow:visible;text-decoration:none;transition:transform .2s,box-shadow .2s}
+body>a.whatsapp-float svg{display:block;width:32px;height:32px;max-width:none;fill:#fff!important;stroke:none!important;stroke-width:0;color:#fff!important;pointer-events:none}
+body>a.whatsapp-float svg path{fill:#fff!important;stroke:none!important}
+body>a.whatsapp-float:hover{background:#25d366!important;color:#fff!important;transform:translateY(-3px);box-shadow:0 12px 32px #075e5450}
+body>a.whatsapp-float:focus-visible{outline:3px solid #075e54;outline-offset:5px}
+@media(max-width:760px){body>a.whatsapp-float{inset:auto calc(20px + env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) auto!important;width:58px;height:58px;padding:13px}}
+@media(prefers-reduced-motion:reduce){body>a.whatsapp-float{transition:none}body>a.whatsapp-float:hover{transform:none}}
