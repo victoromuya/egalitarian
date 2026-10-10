@@ -38,6 +38,38 @@
     </form>
   </div>
 
+  <section aria-labelledby="portal-heading" style="margin-bottom:28px;">
+    <h3 id="portal-heading">My Learning Portal</h3>
+    <p>Your registered courses, learning materials, and certificates.</p>
+    <a href="{% url 'course_list' %}" class="btn btn--outline">Browse Courses</a>
+    {% for enrollment in enrollments %}
+      <article class="card" style="padding:24px;margin-top:20px;">
+        <h4><a href="{% url 'course_detail' enrollment.course.slug %}">{{ enrollment.course.title }}</a></h4>
+        <p>Registered {{ enrollment.enrolled_at|date:"M d, Y" }}</p>
+        {% if not enrollment.is_paid %}
+          <p>Payment pending. Materials are available; payment confirmation is required for the exam.</p>
+          <form method="post" action="{% url 'course_payment' enrollment.course.slug %}">{% csrf_token %}<button class="btn btn--outline" type="submit">Pay via WhatsApp</button></form>
+        {% elif enrollment.course.exam %}
+          <a href="{% url 'exam_take' enrollment.course.slug %}" class="btn btn--outline">Take Exam</a>
+        {% endif %}
+        <h5 style="margin-top:20px;">Course Materials</h5>
+        <ul>
+          {% for material in enrollment.course.materials.all %}
+            <li style="margin-block:12px;"><a href="{% url 'material_download' material.pk %}">Download {{ material.title }}</a>{% if material.description %}<p>{{ material.description }}</p>{% endif %}</li>
+          {% empty %}<li>No materials uploaded yet.</li>{% endfor %}
+        </ul>
+        <h5 style="margin-top:20px;">Certificate</h5>
+        {% if enrollment.uploaded_certificate %}
+          <a href="{% url 'uploaded_certificate_download' enrollment.uploaded_certificate.pk %}" class="btn btn--primary">Download Certificate</a>
+        {% else %}<p>Your certificate will appear here when the admin uploads it.</p>{% endif %}
+      </article>
+    {% empty %}<p style="margin-top:20px;">You have not registered for any courses yet.</p>{% endfor %}
+    {% if certificates %}
+      <h4 style="margin-top:24px;">Exam Certificates</h4>
+      <ul>{% for certificate in certificates %}<li><a href="{% url 'certificate_download' certificate.submission.exam.course.slug %}">{{ certificate.submission.exam.course.title }} — Download Certificate</a></li>{% endfor %}</ul>
+    {% endif %}
+  </section>
+
   <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
     <h3 style="margin-bottom:16px;">Change Password</h3>
     <form method="post" action="">

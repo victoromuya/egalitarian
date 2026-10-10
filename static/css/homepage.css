@@ -173,12 +173,23 @@
 .homepage .engineering-device-stage{width:85%;max-width:650px;justify-self:end;height:460px}
 .homepage .engineering-device figcaption{font-size:14px}
 .homepage .engineering-device figcaption span{font-size:12px}
-.homepage .popular-grid{grid-template-columns:repeat(3,minmax(0,360px));max-width:1128px;justify-content:start}
+.homepage .popular-grid{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none;justify-content:start}
 .homepage .coaching .portrait-art{width:360px;max-width:90%;justify-self:center}
-@media(max-width:1050px){.homepage .career-hero-copy h1{font-size:49px}.homepage .engineering-device-stage{height:390px;width:88%}.homepage .engineering-intro h2{font-size:52px!important}.homepage .popular-grid{grid-template-columns:repeat(2,minmax(0,360px))}}
-@media(max-width:760px){.homepage .career-hero-copy h1{font-size:clamp(36px,calc(8.5vw - 7px),55px)}.homepage .engineering-intro h2{font-size:clamp(44px,9vw,60px)!important}.homepage .engineering-device-stage{height:auto;width:86%;max-width:480px;justify-self:center}.homepage .engineering-intro>p{font-size:16px}.homepage .engineering-device figcaption{font-size:12px}.homepage .engineering-device figcaption span{font-size:10px}.homepage .popular-grid{grid-template-columns:minmax(0,360px)}.homepage .coaching .portrait-art{width:300px}}
+@media(max-width:1050px){.homepage .career-hero-copy h1{font-size:49px}.homepage .engineering-device-stage{height:390px;width:88%}.homepage .engineering-intro h2{font-size:52px!important}.homepage .popular-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.homepage .career-hero-copy h1{font-size:clamp(36px,calc(8.5vw - 7px),55px)}.homepage .engineering-intro h2{font-size:clamp(44px,9vw,60px)!important}.homepage .engineering-device-stage{height:auto;width:86%;max-width:480px;justify-self:center}.homepage .engineering-intro>p{font-size:16px}.homepage .engineering-device figcaption{font-size:12px}.homepage .engineering-device figcaption span{font-size:10px}.homepage .popular-grid{grid-template-columns:minmax(0,1fr)}.homepage .coaching .portrait-art{width:300px}}
 
 .homepage .engineering-capabilities .engineering-service-number{font-size:10px}
+
+/* Compact course cards: four across desktop, two tablet, one mobile. */
+body:is(.homepage,.catalogue-page) .popular-grid { gap: 20px; }
+body:is(.homepage,.catalogue-page) .popular-grid .popular-card { min-width: 0; padding: 22px 18px; }
+body:is(.homepage,.catalogue-page) .popular-grid .popular-card h3 { font-size: 22px; margin-bottom: 12px; }
+body:is(.homepage,.catalogue-page) .popular-grid .course-description { font-size: 13px; line-height: 1.75; margin-bottom: 18px; }
+body:is(.homepage,.catalogue-page) .popular-grid .course-meta { font-size: 12px; gap: 8px 12px; }
+body:is(.homepage,.catalogue-page) .popular-grid .course-certificate { font-size: 12px; margin-bottom: 18px; }
+body:is(.homepage,.catalogue-page) .popular-grid .course-bottom { gap: 12px; padding-top: 16px; }
+body:is(.homepage,.catalogue-page) .popular-grid .course-pricing strong { font-size: 28px; }
+@media(max-width:760px) { body:is(.homepage,.catalogue-page) .popular-grid .popular-card { padding: 24px; } }
 
 /* Inset the hero artwork slightly to follow the navigation edge. */
 @media(min-width:761px){.homepage .career-hero-stage{padding-right:32px}}

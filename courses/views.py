@@ -4,33 +4,28 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import FileResponse, Http404
+from pathlib import Path
 
-from .models import Course, Enrollment
-
-CATEGORIES = ['All'] + [choice[0]
- for choice in Course.CATEGORY_CHOICES]
+from .models import Category, Course, Enrollment, CourseMaterial, CourseCertificate
 
 
 def course_list(request):
-    from core.homepage import COURSE_GROUPS, course_group
-
     category = request.GET.get('category', 'All') or 'All'
-    all_courses = list(Course.objects.all())
+    categories = ['All'] + list(Category.objects.values_list('name', flat=True))
+    all_courses = list(Course.objects.select_related('category'))
     for course in all_courses:
-        course.home_group = course_group(course)
-    if category in COURSE_GROUPS:
-        courses = [course for course in all_courses if course.home_group == category]
-    elif category == 'All':
+        course.home_group = course.category.name
+    if category == 'All':
         courses = all_courses
     else:
-        # Preserve links that use the original catalogue categories.
-        courses = [course for course in all_courses if course.category == category]
+        courses = [course for course in all_courses if course.category.name == category]
     return render(request, 'courses/course_list.html', {
         'courses': courses,
         'course_count': len(all_courses),
-        'categories': ['All'] + COURSE_GROUPS,
+        'categories': categories,
         'active_category': category,
-        'legacy_category': category if category not in ['All'] + COURSE_GROUPS else '',
+        'legacy_category': category if category not in categories else '',
         'build_whatsapp_url': f'https://wa.me/{settings.WHATSAPP_NUMBER}',
     })
 
@@ -71,8 +66,20 @@ def my_courses(request):
 @login_required
 def enroll(request, slug):
     course = get_object_or_404(Course, slug=slug)
-    enrollment, _ = Enrollment.objects.get_or_create(student=request.user, course=course)
+    enrollment = Enrollment.objects.filter(student=request.user, course=course).first()
 
+    if request.method == 'POST':
+        enrollment, _ = Enrollment.objects.get_or_create(student=request.user, course=course)
+        messages.success(request, f'You are enrolled in {course.title}. Your materials are available in your profile.')
+        return redirect('profile')
+
+    return render(request, 'courses/enroll.html', {'course': course, 'enrollment': enrollment})
+
+
+@login_required
+def course_payment(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    get_object_or_404(Enrollment, student=request.user, course=course)
     if request.method == 'POST':
         if course.is_free:
             messages.success(request, f'You are enrolled in {course.title}.')
@@ -85,4 +92,24 @@ def enroll(request, slug):
         whatsapp_url = f'https://wa.me/{settings.WHATSAPP_NUMBER}?text={whatsapp_message}'
         return redirect(whatsapp_url)
 
-    return render(request, 'courses/enroll.html', {'course': course, 'enrollment': enrollment})
+    return redirect('profile')
+
+
+def _download(file):
+    try:
+        stream = file.open('rb')
+    except (FileNotFoundError, ValueError):
+        raise Http404('File is unavailable.')
+    return FileResponse(stream, as_attachment=True, filename=Path(file.name).name)
+
+
+@login_required
+def material_download(request, pk):
+    material = get_object_or_404(CourseMaterial, pk=pk, course__enrollments__student=request.user)
+    return _download(material.file)
+
+
+@login_required
+def uploaded_certificate_download(request, pk):
+    certificate = get_object_or_404(CourseCertificate, pk=pk, enrollment__student=request.user)
+    return _download(certificate.file)

@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{{ title }} | {{ site_title }}{% endblock %}
+{% block dark-mode-vars %}
+<link rel="stylesheet" href="{% static 'admin/css/dark_mode.css' %}">
+<script src="{% static 'js/admin-theme.js' %}"></script>
+{% endblock %}
+{% block branding %}
+<a class="admin-brand" href="{% url 'admin:index' %}">
+  <img class="admin-brand-logo" src="{% static 'images/logo.png' %}" alt="" width="44" height="44">
+  <span>Egalitarian<span class="admin-brand-caption">COMPUTERS · ADMIN WORKSPACE</span></span>
+</a>
+{% endblock %}
+{% block responsive %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/admin-workspace.css' %}?v=7">{% endblock %}
+{% block nav-sidebar %}
+{% if has_permission %}<aside class="concept-sidebar" aria-label="Admin navigation">
+<p class="sidebar-label">WORKSPACE</p>
+<a class="sidebar-home {% if request.resolver_match.url_name == 'index' %}is-active{% endif %}" href="{% url 'admin:index' %}"><span aria-hidden="true">⌂</span> Dashboard</a>
+{% for app in workspace_navigation %}<details open class="sidebar-group"><summary>{{ app.name }}</summary>{% for model in app.models %}{% if model.admin_url %}<a href="{{ model.admin_url }}" {% if model.admin_url in request.path %}class="is-active" aria-current="page"{% endif %}><span class="sidebar-dot" aria-hidden="true"></span>{{ model.name }}</a>{% endif %}{% endfor %}</details>{% endfor %}
+<a class="sidebar-site" href="{% url 'home' %}">View website ↗</a>
+</aside>{% endif %}
+{% endblock %}
+{% block footer %}<div class="admin-footer">Egalitarian Computers <span>Learning, made accessible.</span></div>{% endblock %}

@@ -44,6 +44,19 @@ Design principle: each app is a self-contained subsystem. `events/` in particula
 
 ## Design decisions (why, not just what)
 
+### Student portal update (October 2026)
+- Course categories are database records (`courses.Category`) editable in admin, with names, display order, and protected deletion when courses use them. Course.category is a foreign key. Migration 0006 preserves the previous category assignments and grants Content Managers category permissions. Catalogue and homepage filters, homepage learning-path links, and footer category links read the same records. Homepage All shows every course; category filtering has no three-card cap.
+- Student login uses email and password via `accounts.backends.EmailBackend` with case-insensitive matching. Django admin retains its staff username login. Registration and profile changes require valid, unique emails; admin user forms validate duplicates. Migration `accounts.0003_unique_login_email` adds a case-insensitive unique index for nonblank emails while preserving existing accounts. Login honors safe local `next` redirects for protected pages.
+- Exam pages use `static/css/exam.css` and `static/js/exam.js` for responsive questions, accessible radio groups, answered/flagged navigation, and results. Opening a ready exam creates or resumes an in-progress submission; its server timestamp sets the deadline, so refresh cannot reset the timer. Answers autosave to the login-, payment-, ownership-, CSRF-, and deadline-protected save endpoint. Expired submissions grade previously saved answers; repeated submission does not create another result or certificate. Incomplete exam configurations show an unavailable state and do not start an attempt.
+- The admin dashboard follows the supplied `admin-page.png` concept: blue framing, a white sidebar with permission-aware model navigation, pastel metric cards, a seven-day registration chart, payment-status ring, recent registrations, exam results, upload actions, and recent admin activity. Charts use database records and Africa/Lagos calendar dates; no illustrative metrics are presented as real data.
+- Admin is now mounted only at `/secret-admin-page/`; `/admin/` is removed. The custom `EgalitarianAdminSite` provides permission-aware live dashboard counts and upload shortcuts. Branded admin templates and `static/css/admin-workspace.css` style the dashboard, login, forms, and lists while retaining Django admin controls and theme switching.
+- Course enrollment requires login and an explicit POST confirmation; visiting the enrollment page does not register the student.
+- The profile is the student portal, listing enrolled courses, all uploaded course materials, admin-uploaded certificates, and existing exam certificates.
+- Materials are available immediately after enrollment, including pending-payment enrollments, per the updated client requirement. Exam access still requires confirmed payment. This supersedes the older all-content payment gate below.
+- Admins upload `CourseMaterial` files on the course admin page and a `CourseCertificate` on the student's enrollment admin page (or through the dedicated lists). Certificates are tied to one enrollment; no exam submission is required for uploaded certificates.
+- Content Managers have upload/edit/delete permissions for these two new models. Downloads enforce enrollment or ownership server-side; `/media/` remains private.
+- Apply course migrations 0004 and 0005 on deployment. Include `media/course_uploads/` in backups along with generated certificates.
+
 ### Accounts / Auth
 - Single `User`/`Student` model — no separate `Instructor` model/table.
 - **Update:** Django admins (`is_staff`/`is_superuser`) act as instructors for content management — an admin can create/upload `Course` and `Event` records (via Django admin and/or dedicated admin-only views). This is a permission granted to the existing admin role, not a new `Instructor` model or a grading role.
@@ -51,7 +64,7 @@ Design principle: each app is a self-contained subsystem. `events/` in particula
 - Events are entirely decoupled from the `User`/`Student` model for registration purposes (see below) — the admin-uploads-events capability is a separate, one-directional relationship (admin → creates Event), not a link between `EventRegistration` and `User`.
 
 ### Courses / Enrollment
-- `Course` price is **immutable after creation** — no editing price post-creation. This removes an entire class of "what if price changed after enrollment" edge cases. Enforced in two layers: readonly in Django admin **and** `Course.save()` raises `ValueError` on a price change to an existing row (same pattern on `Event.save()` for price/capacity).
+- `Course.price` is database-backed and editable by admins at any time. Nonnegative values are required; 0 means free. Public pages read the current price, and edits preserve existing enrollment payment confirmations.
 - `Enrollment.is_paid` is set once at creation: `True` if `course.price == 0`, else `False` pending manual payment confirmation.
 - `is_paid` is **one binary gate on all course content** (not per-feature). Unpaid = syllabus/description only, no exam, no future LMS content.
 - **Critical, not-yet-built requirement:** access control must be enforced at the **view/permission level**, never by hiding UI. A student can hit an exam URL directly regardless of what's shown in templates — every relevant view must explicitly check `enrollment.is_paid` server-side.
@@ -73,7 +86,7 @@ Design principle: each app is a self-contained subsystem. `events/` in particula
 - **No account required** to view or register for an event, ever (this flip-flopped across the design conversation — three different answers were given before landing here; treat this as final).
 - `EventRegistration` captures `full_name`/`email`/`phone` directly — no link to `User` even if the registrant happens to also be a logged-in student.
 - Consequence (intentional, not a gap): event registrants can't get in-app notifications, since notifications are tied to `User` accounts.
-- `Event.capacity` and `Event.price` set at creation, both **immutable** after — same rule as courses.
+- `Event.capacity` and `Event.price` are set at creation and remain immutable. Course prices are editable independently.
 - Capacity behavior: **hard cutoff**, no waitlist.
 - Paid events use the same manual boolean-flip pattern as course payments. (Rejected: a per-registration unique access-code/unlock system — dropped once confirmed events follow the same simple boolean pattern as courses.)
 
@@ -103,7 +116,7 @@ Design principle: each app is a self-contained subsystem. `events/` in particula
 8. ✅ **In-app notifications** — done ("mark all as read" wired, enrollment/payment signals in `courses/signals.py`)
 9. ✅ **Django admin registration** — done. All five apps' `admin.py` implemented (immutability readonly rules, `is_paid` list_editable, exam inlines, read-only `Submission`/`Answer`/`Certificate`). "Admins act as instructors" is enforced via the **"Content Managers" auth group** created in `core/migrations/0002_content_managers_group.py`: authoring perms on `Course`/`Event`/`Exam`/`Question`/`Choice`, change-only on `Enrollment`/`EventRegistration` (the `is_paid` flip), view-only on submissions/certificates, no deletes on courses/events. New admins need `is_staff` + membership in this group (`is_staff` alone shows an empty admin).
 10. **Hardening todo:**
-    - ✅ Guard immutability server-side, not just in admin — done. `Course.save()` refuses `price` changes and `Event.save()` refuses `price`/`capacity` changes on existing rows (raises `ValueError`). Admin readonly rules remain as the second layer (and cover `queryset.update()`, which bypasses `save()`).
+    - Event price/capacity immutability remains enforced in `Event.save()` and admin. Course prices are editable per the updated client requirement, with nonnegative validation.
     - Exam authoring ergonomics — editing choices requires drilling into each Question separately (Django has no native nested inlines). Acceptable for now; if the client complains, add `django-nested-admin` rather than building custom views.
 11. **Production readiness:**
     - ✅ Settings/security — done. `settings.py` is env-driven (`DJANGO_DEBUG`, `DJANGO_SECRET_KEY` — required in prod, dev fallback otherwise; `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`, comma-separated; see `.env.example`). HTTPS hardening auto-applies whenever DEBUG is off: `SECURE_SSL_REDIRECT`, secure session/CSRF cookies, 1-year HSTS (includeSubDomains + preload — **verify HTTPS on the real domain before sending traffic; HSTS is sticky in browsers**), `SECURE_PROXY_SSL_HEADER` for PaaS/nginx TLS termination. `check --deploy` passes clean. ✅ Real `WHATSAPP_NUMBER` (`2348124411984`) set. Real contact info (address / +234 (812) 441 1984 / contactegalitarian@gmail.com) is live in the footer and contact page.

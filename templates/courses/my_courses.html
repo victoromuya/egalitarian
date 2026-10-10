@@ -53,7 +53,7 @@
               <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;">
                 <a href="{% url 'course_detail' item.course.slug %}" class="btn btn--ghost btn--sm">View Course</a>
                 {% if not item.enrollment.is_paid %}
-                  <a href="{% url 'enroll' item.course.slug %}" class="btn btn--primary btn--sm">Complete Payment</a>
+                  <a href="{% url 'profile' %}" class="btn btn--primary btn--sm">Materials &amp; Payment</a>
                 {% elif item.certificate %}
                   <a href="{% url 'exam_result' item.course.slug %}" class="btn btn--outline btn--sm">Exam Result</a>
                   <a href="{% url 'certificate_download' item.course.slug %}" class="btn btn--primary btn--sm">📜 Certificate</a>

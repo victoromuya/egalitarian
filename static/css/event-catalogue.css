@@ -1,0 +1,36 @@
+/* Shared catalogue typography, pastel surfaces and lime accents. */
+.events-page .catalogue-hero-grid{grid-template-columns:1.35fr 1fr;gap:55px}
+.event-invitation{background:#e6e0f6;border-radius:20px;padding:32px;position:relative;overflow:hidden;border:1px solid #d5cce8}
+.event-invitation-mark{display:flex;width:76px;height:76px;align-items:center;justify-content:center;background:#c6ed48;color:#193747;border-radius:50%;font-size:48px;margin:25px 0}
+.learning-home .event-invitation h2{font-size:clamp(26px,3vw,38px);line-height:1.2;color:#302b40;letter-spacing:-.04em;margin:0 0 18px}
+.learning-home .event-invitation p{font-size:15px;line-height:1.8;color:#655c72}
+.event-invitation-bottom{display:flex;gap:18px;flex-wrap:wrap;border-top:1px solid #c5bad7;margin-top:25px;padding-top:20px;font-size:12px;color:#554763}
+.event-library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.event-list-card{background:#fff;border:1px solid #e7e0ed;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s;min-width:0}
+.event-list-card:hover{transform:translateY(-4px);box-shadow:0 15px 35px #342b4312}
+.event-card-art{height:155px;background:#d8eafb;color:#204d6a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.event-card-art--bootcamp{background:#dfeabb;color:#405326}.event-card-art--seminar{background:#e9dff4;color:#64477b}
+.event-card-art>span:first-child{position:absolute;left:22px;top:20px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.event-card-art svg{width:106px;height:106px;transform:rotate(-8deg)}.event-art-number{position:absolute;right:16px;bottom:-14px;font-size:90px;line-height:1;font-weight:700;opacity:.1}
+.event-card-content{padding:24px;display:flex;flex-direction:column;flex:1}
+.event-card-labels{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#687681;margin-bottom:18px;flex-wrap:wrap}.event-card-labels>span:first-child{color:#5f4776;font-weight:600}.event-card-labels .event-full{color:#9d3e3e}
+.learning-home .event-list-card h3{font-size:22px;line-height:1.35;letter-spacing:-.035em;margin:0 0 12px;color:#163747}.event-list-card h3 a{color:inherit;overflow-wrap:anywhere}
+.learning-home .event-card-description{font-size:14px;line-height:1.75;color:#65717c;margin:0 0 22px}
+.event-schedule{margin:auto 0 24px;padding:18px 0;border-top:1px solid #edf0f2;border-bottom:1px solid #edf0f2;display:grid;gap:10px;font-size:12px}
+.event-schedule>div{display:grid;grid-template-columns:55px minmax(0,1fr);gap:10px}.event-schedule dt{color:#7a8590}.event-schedule dd{margin:0;color:#294451;line-height:1.6;overflow-wrap:anywhere}
+.event-card-action{display:flex;justify-content:space-between;align-items:center;gap:12px}.event-card-action>div>span{display:block;font-size:11px;color:#78828b;margin-bottom:3px}.event-card-action strong{font-size:22px;color:#173b4b}.event-card-action>a{font-size:12px;font-weight:600;background:#000;color:#fff;padding:12px 16px;border-radius:30px;white-space:nowrap}
+.events-page a:focus-visible{outline:3px solid #2678bd;outline-offset:4px}
+html[data-theme="dark"] .events-page .event-invitation{background:#29243d;border-color:#484158}
+html[data-theme="dark"] .events-page .event-list-card{background:#1e2331;border-color:#3c4056}
+html[data-theme="dark"] .events-page .event-schedule{border-color:#414257}
+html[data-theme="dark"] .events-page :is(.event-schedule dd,.event-card-action strong,.event-list-card h3,.event-invitation h2){color:#e4edf5}
+html[data-theme="dark"] .events-page :is(.event-card-description,.event-card-labels,.event-schedule dt,.event-invitation p,.event-invitation-bottom,.event-card-action>div>span){color:#bbc6d7}
+@media(max-width:1050px){.event-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.events-page .catalogue-hero-grid{gap:30px}}
+@media(max-width:760px){.events-page .catalogue-hero-grid{grid-template-columns:1fr}.event-library-grid{grid-template-columns:1fr}.event-invitation{padding:26px}.event-card-content{padding:22px}}
+@media(prefers-reduced-motion:reduce){.event-list-card{transition:none}.event-list-card:hover{transform:none}}
+
+.event-card-action>a:hover{background:#242424;color:#fff}
+
+/* Events use an editorial accent rather than a text highlight. */
+.events-page .catalogue-hero h1 strong{color:#675080;font-style:italic;font-weight:600}
+html[data-theme="dark"] .events-page .catalogue-hero h1 strong{color:#c8b3e3}

@@ -10,21 +10,28 @@ from django.urls import reverse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
-from courses.models import Course
+from courses.models import Category, Course
 from events.models import Event
 from .models import NewsletterSubscriber
-from .homepage import COURSE_GROUPS, course_group
 
 
 def home(request):
-    all_courses = Course.objects.all()
-    featured_courses = list(all_courses)
-    visible_courses = 0
-    for course in featured_courses:
-        course.home_group = course_group(course)
-        course.home_visible = course.home_group == COURSE_GROUPS[0] and visible_courses < 3
-        if course.home_visible:
-            visible_courses += 1
+    all_courses = Course.objects.select_related('category')
+    categories = list(Category.objects.values_list('name', flat=True))
+    categories.sort(key=lambda name: name.casefold() != 'programming')
+    initial_category = categories[0] if categories else None
+    featured_courses = []
+    category_counts = {}
+    course_count = 0
+    for course in all_courses:
+        course_count += 1
+        count = category_counts.get(course.category_id, 0)
+        if count >= 4:
+            continue
+        category_counts[course.category_id] = count + 1
+        course.home_group = course.category.name
+        course.home_visible = course.home_group == initial_category
+        featured_courses.append(course)
     upcoming_events = Event.objects.all()[:2]
     stats = {
         'countries': 150,
@@ -39,12 +46,13 @@ def home(request):
     build_whatsapp_url = f'https://wa.me/{settings.WHATSAPP_NUMBER}?text={build_message}'
     return render(request, 'core/home.html', {
         'featured_courses': featured_courses,
-        'course_count': len(featured_courses),
+        'course_count': course_count,
         'upcoming_events': upcoming_events,
         'stats': stats,
         'build_whatsapp_url': build_whatsapp_url,
-        'course_categories': COURSE_GROUPS,
-        'initial_group_empty': bool(featured_courses) and visible_courses == 0,
+        'course_categories': categories,
+        'initial_category': initial_category,
+        'initial_group_empty': bool(featured_courses) and not any(c.home_visible for c in featured_courses),
     })
 
 

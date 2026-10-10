@@ -20,14 +20,14 @@ def flag_payment_confirmation(sender, instance, **kwargs):
 @receiver(post_save, sender=Enrollment)
 def notify_enrollment_events(sender, instance, created, **kwargs):
     course = instance.course
-    link = reverse('course_detail', args=[course.slug])
+    link = reverse('profile')
     if created:
         if instance.is_paid:
             message = f'You are enrolled in "{course.title}". You have full access to the course.'
         else:
             message = (
                 f'You are enrolled in "{course.title}". Complete payment via WhatsApp '
-                f'to unlock the course content and exam.'
+                f'to unlock the exam. Your course materials are available in your profile.'
             )
         Notification.objects.create(user=instance.student, message=message, link=link)
     elif getattr(instance, '_payment_just_confirmed', False):

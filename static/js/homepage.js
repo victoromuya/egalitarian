@@ -15,9 +15,11 @@
     let visible = 0;
     cards.forEach(card => {
       const matches = card.dataset.courseCategory === button.dataset.courseFilter;
-      card.hidden = !matches || visible >= 3;
+      card.hidden = !matches;
       if (!card.hidden) visible++;
     });
+    const catalogueLink = document.getElementById('category-catalogue-link');
+    catalogueLink.href = `${catalogueLink.dataset.catalogueUrl}?category=${encodeURIComponent(button.dataset.courseFilter)}`;
     document.getElementById('course-filter-empty').hidden = visible > 0 || cards.length === 0;
   }));
 

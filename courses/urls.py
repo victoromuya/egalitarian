@@ -5,6 +5,9 @@ urlpatterns = [
     path('', views.course_list, name='course_list'),
     # must precede the slug pattern so 'mine' isn't captured as a course slug
     path('mine/', views.my_courses, name='my_courses'),
+    path('materials/<int:pk>/download/', views.material_download, name='material_download'),
+    path('certificates/<int:pk>/download/', views.uploaded_certificate_download, name='uploaded_certificate_download'),
     path('<slug:slug>/', views.course_detail, name='course_detail'),
     path('<slug:slug>/enroll/', views.enroll, name='enroll'),
+    path('<slug:slug>/payment/', views.course_payment, name='course_payment'),
 ]

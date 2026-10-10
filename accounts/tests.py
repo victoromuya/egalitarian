@@ -5,12 +5,12 @@ from django.urls import reverse
 
 class AuthenticationPageTests(TestCase):
     def test_login_keeps_existing_authentication_and_failure_feedback(self):
-        user = User.objects.create_user(username='ada', password='Strong-Learning-42!')
-        failed = self.client.post(reverse('login'), {'username': 'ada', 'password': 'wrong'})
+        user = User.objects.create_user(username='ada', email='ada@example.com', password='Strong-Learning-42!')
+        failed = self.client.post(reverse('login'), {'email': 'ada@example.com', 'password': 'wrong'})
         self.assertEqual(failed.status_code, 200)
-        self.assertContains(failed, 'Invalid username or password.')
-        self.assertContains(failed, 'value="ada"')
-        response = self.client.post(reverse('login'), {'username': 'ada', 'password': 'Strong-Learning-42!'})
+        self.assertContains(failed, 'Invalid email address or password.')
+        self.assertContains(failed, 'value="ada@example.com"')
+        response = self.client.post(reverse('login'), {'email': 'ada@example.com', 'password': 'Strong-Learning-42!'})
         self.assertRedirects(response, reverse('dashboard'))
         self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)
 
@@ -41,6 +41,66 @@ class AuthenticationPageTests(TestCase):
 from django.test import override_settings
 
 
+class EmailLoginTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('email-student', email='student@example.com', password='Learning-Secure-42!')
+
+    def test_email_login_ignores_case_and_whitespace(self):
+        response = self.client.post(reverse('login'), {'email': '  STUDENT@EXAMPLE.COM  ', 'password': 'Learning-Secure-42!'})
+        self.assertRedirects(response, reverse('dashboard'))
+        self.assertEqual(int(self.client.session['_auth_user_id']), self.user.pk)
+
+    def test_username_unknown_email_and_inactive_users_cannot_login(self):
+        for data in ({'username': self.user.username}, {'email': 'missing@example.com'}, {'email': ''}):
+            response = self.client.post(reverse('login'), {**data, 'password': 'Learning-Secure-42!'})
+            self.assertContains(response, 'Invalid email address or password.')
+            self.assertNotIn('_auth_user_id', self.client.session)
+        self.user.is_active = False
+        self.user.save()
+        response = self.client.post(reverse('login'), {'email': self.user.email, 'password': 'Learning-Secure-42!'})
+        self.assertContains(response, 'Invalid email address or password.')
+
+    def test_registration_rejects_duplicate_and_invalid_emails(self):
+        data = {'username': 'new-student', 'password1': 'Learning-Secure-42!', 'password2': 'Learning-Secure-42!'}
+        for email in ('STUDENT@EXAMPLE.COM', 'invalid', ''):
+            response = self.client.post(reverse('register'), {**data, 'email': email})
+            self.assertEqual(response.status_code, 200)
+            self.assertFalse(User.objects.filter(username='new-student').exists())
+
+    def test_profile_cannot_claim_another_accounts_email(self):
+        other = User.objects.create_user('other-email-student', email='other@example.com')
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('profile'), {'email': 'OTHER@EXAMPLE.COM', 'first_name': 'Changed'})
+        self.assertRedirects(response, reverse('profile'))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, 'student@example.com')
+        self.assertEqual(self.user.first_name, '')
+        self.client.post(reverse('profile'), {'email': ' NEW@EXAMPLE.COM ', 'first_name': 'Ada'})
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, 'new@example.com')
+
+    def test_database_rejects_duplicate_emails_case_insensitively(self):
+        from django.db import IntegrityError, transaction
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            User.objects.create_user('duplicate-email', email='STUDENT@EXAMPLE.COM')
+
+    def test_login_resumes_safe_next_url_and_rejects_external_redirect(self):
+        for next_url, expected in ((reverse('profile'), reverse('profile')), ('https://example.org/', reverse('dashboard'))):
+            self.client.logout()
+            response = self.client.post(reverse('login'), {'email': self.user.email, 'password': 'Learning-Secure-42!', 'next': next_url})
+            self.assertRedirects(response, expected)
+
+    def test_admin_username_login_still_works(self):
+        admin = User.objects.create_superuser('email-admin', 'admin@example.com', 'Learning-Secure-42!')
+        response = self.client.post(reverse('admin:login'), {'username': admin.username, 'password': 'Learning-Secure-42!', 'next': reverse('admin:index')})
+        self.assertRedirects(response, reverse('admin:index'))
+
+    def test_login_requires_csrf(self):
+        from django.test import Client
+        response = Client(enforce_csrf_checks=True).post(reverse('login'), {'email': self.user.email, 'password': 'Learning-Secure-42!'})
+        self.assertEqual(response.status_code, 403)
+
+
 @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
 class PasswordResetTests(TestCase):
     def setUp(self):
@@ -69,7 +129,7 @@ class PasswordResetTests(TestCase):
         self.assertFalse(self.user.check_password('Original-Learning-42!'))
         self.assertContains(self.client.get(link, follow=True), 'This reset link is invalid')
         self.assertIsNone(self.client.session.get('_auth_user_id'))
-        self.assertRedirects(self.client.post(reverse('login'), {'username': self.user.username, 'password': 'Renewed-Learning-92!'}), reverse('dashboard'))
+        self.assertRedirects(self.client.post(reverse('login'), {'email': self.user.email, 'password': 'Renewed-Learning-92!'}), reverse('dashboard'))
 
     def test_unknown_email_does_not_reveal_account_existence(self):
         from django.core import mail

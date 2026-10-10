@@ -1,0 +1,18 @@
+/* Final shared grid rules for every course category on both pages. */
+body.catalogue-page #catalogue-courses .catalogue-grid,
+body.homepage .popular .popular-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: none;
+}
+body:is(.catalogue-page, .homepage) .popular-grid .popular-card { min-width: 0; padding: 22px 18px; }
+@media (max-width: 1050px) {
+  body.catalogue-page #catalogue-courses .catalogue-grid,
+  body.homepage .popular .popular-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  body.catalogue-page #catalogue-courses .catalogue-grid,
+  body.homepage .popular .popular-grid { grid-template-columns: minmax(0, 1fr); }
+}

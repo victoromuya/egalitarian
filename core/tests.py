@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .models import NewsletterSubscriber
-from courses.models import Course
+from courses.models import Category, Course
 
 
 class HomepageTests(TestCase):
@@ -18,7 +18,7 @@ class HomepageTests(TestCase):
 
     def test_courses_keep_real_prices_and_detail_links(self):
         course = Course.objects.create(
-            title='Learn Python', slug='learn-python', category='Programming',
+            title='Learn Python', slug='learn-python', category=Category.objects.get_or_create(name='Programming')[0],
             description='Practical Python', syllabus='Functions, Lists',
             duration='4 weeks', level='Beginner', price='49.00',
         )
@@ -104,7 +104,8 @@ class AdminCatalogueAuthoringTests(TestCase):
         from django.contrib.auth.models import User
         self.admin_user = User.objects.create_superuser('author', 'author@example.com', 'Author-Learning-42!')
         self.client.force_login(self.admin_user)
-        self.course_data = {'title': 'New Data Course', 'slug': 'new-data-course', 'category': 'Programming', 'description': 'A practical data course.', 'syllabus': 'Analysis, Charts', 'duration': '6 weeks', 'level': 'Beginner', 'price': '75.00', '_save': 'Save'}
+        self.course_data = {'title': 'New Data Course', 'slug': 'new-data-course', 'category': Category.objects.get_or_create(name='Programming')[0].pk, 'description': 'A practical data course.', 'syllabus': 'Analysis, Charts', 'duration': '6 weeks', 'level': 'Beginner', 'price': '75.00', '_save': 'Save'}
+        self.course_data.update({'materials-TOTAL_FORMS': '0', 'materials-INITIAL_FORMS': '0', 'materials-MIN_NUM_FORMS': '0', 'materials-MAX_NUM_FORMS': '1000'})
         self.event_data = {'title': 'New Web Workshop', 'slug': 'new-web-workshop', 'event_type': 'Workshop', 'description': 'Learn web applications.', 'date_display': 'November 20, 2026', 'time_display': '10:00 AM WAT', 'location': 'Lagos', 'topics': 'HTML, CSS', 'price': '25.00', 'capacity': '20', '_save': 'Save'}
 
     def test_admin_creates_course_with_all_details_and_edits_description(self):
@@ -136,6 +137,32 @@ class AdminCatalogueAuthoringTests(TestCase):
         self.assertContains(page, '<li>CSS</li>')
         for text in ['Learn web applications.', 'November 20, 2026', '10:00 AM WAT', 'Lagos']:
             self.assertContains(page, text)
+
+    def test_admin_price_updates_reach_public_pages_and_preserve_payment(self):
+        from courses.models import Enrollment
+        Course.objects.all().delete()
+        self.client.post(reverse('admin:courses_course_add'), self.course_data)
+        course = Course.objects.get(slug='new-data-course')
+        enrollment = Enrollment.objects.create(student=self.admin_user, course=course)
+        enrollment.is_paid = True
+        enrollment.save()
+        change_url = reverse('admin:courses_course_change', args=[course.pk])
+        response = self.client.post(change_url, dict(self.course_data, price='123.45'))
+        self.assertEqual(response.status_code, 302)
+        course.refresh_from_db()
+        self.assertEqual(str(course.price), '123.45')
+        for url in [reverse('home'), reverse('course_list'), course.get_absolute_url(), reverse('enroll', args=[course.slug])]:
+            self.assertContains(self.client.get(url), '$123.45')
+        enrollment.refresh_from_db()
+        self.assertTrue(enrollment.is_paid)
+        response = self.client.post(change_url, dict(self.course_data, price='-1.00'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('price', response.context['adminform'].form.errors)
+        course.refresh_from_db()
+        self.assertEqual(str(course.price), '123.45')
+        response = self.client.post(change_url, dict(self.course_data, price='0.00'))
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(self.client.get(course.get_absolute_url()), 'Free')
 
     def test_admin_rejects_negative_price_and_zero_event_capacity(self):
         response = self.client.post(reverse('admin:courses_course_add'), dict(self.course_data, price='-1.00'))
